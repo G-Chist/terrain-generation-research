@@ -37,8 +37,7 @@ def randomGradient(grad_range):
 
 def smoothing(val):
     # smoothing function used in perlin interpolation
-    # applies a quintic curve: 6t^5 - 15t^4 + 10t^3
-    return 6 * (val ** 5) - 15 * (val ** 4) + 10 * (val ** 3)
+    return 6 * (val ** 5) - 15 * (val ** 4) + 10 * (val ** 3) + 7 * (val ** 2)
 
 
 def generate_perlin_noise(iterations=3, n_row=10, n_col=10, grad_range=1.0, rand_range=1.0,
