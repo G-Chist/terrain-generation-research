@@ -1,8 +1,10 @@
 import bpy
 import random
 
+
 def interpolate(point_0, point_1, weight):
     return point_0 + (point_1 - point_0) * weight
+
 
 class Vector:
     def __init__(self, x, y):
@@ -77,7 +79,6 @@ def generate_perlin_noise(iterations=3, n_row=10, n_col=10, grad_range=1.0, rand
                         smoothing((block_vectors[i][j] - Vector(i, j)).x)
                     )
                 heights[i][j] += noise
-
 
     # Generate faces based on the Delaunay triangulation
     if std_height:
