@@ -3,8 +3,10 @@ import math
 import random
 from math import fabs
 
+
 def smoothing(val):
     return 6 * (val ** 5) - 15 * (val ** 4) + 10 * (val ** 3)
+
 
 def generate_worley(width=10, n=36, size=4.0, z=1.0, random_range=1.0,
         noise_range=0.003, sea_level = 0.2):
@@ -67,6 +69,7 @@ def generate_worley(width=10, n=36, size=4.0, z=1.0, random_range=1.0,
                 faces.append([i*resolution+j, (i+1)*resolution+j, (1+i)*resolution+(j+1)])
 
     return vertices, edges, faces
+
 
 # create 
 vertices, edges, faces = generate_worley(n=70, width=6, sea_level=0.15, z=0.4)
