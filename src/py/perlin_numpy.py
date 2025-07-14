@@ -5,7 +5,7 @@ import os
 import numpy as np
 import time
 
-random.seed(123)  # change if needed
+np.random.seed(123)  # change if needed
 
 start_time = time.time()
 
