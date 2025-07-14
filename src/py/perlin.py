@@ -147,7 +147,7 @@ def generate_perlin_noise(iterations=3, n_row=10, n_col=10, grad_range=1.0, rand
 
 # call the function to generate terrain geometry
 vertices, faces = generate_perlin_noise(
-    iterations=6,        # number of noise layers (more = higher detail)
+    iterations=4,        # number of noise layers (more = higher detail)
     n_row=9,             # initial grid rows
     n_col=9,             # initial grid cols
     grad_range=1,        # initial gradient vector magnitude
