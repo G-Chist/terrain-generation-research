@@ -1,0 +1,8 @@
+- https://github.com/dandrino/terrain-erosion-3-ways
+  - Three Ways of Generating Terrain with Erosion Features
+- https://github.com/pvigier/perlin-numpy
+  - fast numpy-based Perlin noise generator
+- https://github.com/sdawzy/procedural-terrain-generation-blender
+  - procedural terrain generation in Blender
+- https://github.com/unmannedlab/RELLIS-3D
+  - RELLIS-3D: A Multi-modal Dataset for Off-Road Robotics
