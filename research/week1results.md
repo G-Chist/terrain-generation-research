@@ -1,5 +1,9 @@
-## Week 1 results 
+## Week 1 results
 
+- blender
+  - following the donut tutorial, on Geometry Nodes as of right now
+  - looked at scripting menu
+---
 - perlin.py
   - works in Blender
   - code commented out for readability
