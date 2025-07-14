@@ -1,6 +1,7 @@
 import bpy
 import random
-
+import csv
+import os
 
 random.seed(123)  # change if needed
 
@@ -37,7 +38,7 @@ def randomGradient(grad_range):
 
 def smoothing(val):
     # smoothing function used in perlin interpolation
-    return 6 * (val ** 5) - 15 * (val ** 4) + 10 * (val ** 3) + 7 * (val ** 2)
+    return 6 * (val ** 5) - 15 * (val ** 4) + 10 * (val ** 3)
 
 
 def generate_perlin_noise(iterations=3, n_row=10, n_col=10, grad_range=1.0, rand_range=1.0,
@@ -147,13 +148,14 @@ def generate_perlin_noise(iterations=3, n_row=10, n_col=10, grad_range=1.0, rand
 # call the function to generate terrain geometry
 vertices, faces = generate_perlin_noise(
     iterations=6,        # number of noise layers (more = higher detail)
-    n_row=6,             # initial grid rows
-    n_col=6,             # initial grid cols
+    n_row=9,             # initial grid rows
+    n_col=9,             # initial grid cols
     grad_range=1,        # initial gradient vector magnitude
-    rand_range=1,        # initial random noise amplitude
-    size=4.0,            # size of terrain in blender units
-    sea_level=0.2        # minimum surface height
+    rand_range=0.1,        # initial random noise amplitude
+    size=12.0,            # size of terrain in blender units
+    sea_level=0.0        # minimum surface height
 )
+
 
 # create a new mesh and fill it with the generated vertex and face data
 perlin_mesh = bpy.data.meshes.new("perlin_mesh")
@@ -168,6 +170,18 @@ terrain_collection = bpy.data.collections.new('terrain_collection')
 # link the collection and object to the current scene
 bpy.context.scene.collection.children.link(terrain_collection)
 terrain_collection.objects.link(perlin_terrain)
+
+# determine an absolute path to save the CSV in the same directory as the .blend file (if saved)
+blend_path = bpy.path.abspath("//vertices.csv")
+
+# write vertices to a CSV file
+with open(blend_path, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    writer.writerow(["x", "y", "z"])  # header
+    for x, y, z in vertices:
+        writer.writerow([x, y, z])
+
+print(f"Saved vertex data to: {blend_path}")
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
