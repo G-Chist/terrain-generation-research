@@ -16,3 +16,7 @@
   - works like perlin.py, but faster
     - example: the code with parameters ``vertices, faces = generate_perlin_noise(iterations=6, n_row=9, n_col=9, grad_range=1,
                                         rand_range=0.1, size=12.0, sea_level=0.0)`` took 9 seconds to run, whereas perlin.py took 19 seconds with the same parameters
+---
+- related ideas
+  - to generate paths, we can run a pathfinding algorithm such as A* on the generated terrain and adjust nodes adjacent to the discovered path to form a smooth road-like path
+  - we can write a function to smoothen the peaks or local maxima in order to generate a more traversable terrain
