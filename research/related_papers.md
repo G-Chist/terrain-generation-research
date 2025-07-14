@@ -1,2 +1,4 @@
 - https://cgl.ethz.ch/Downloads/Publications/Papers/2001/p_Par01.pdf
+  - procedural city/road generation
 - https://idsia-robotics.github.io/files/publications/chavez-garcia2018.pdf
+  - learning ground traversability from simulations
