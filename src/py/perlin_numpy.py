@@ -215,7 +215,7 @@ if __name__ == '__main__':
     # PARAMETERS
     random_seed = 123
 
-    shape = (1024, 1024)
+    size = 1024
     res = (8, 8)
     octaves = 8
 
@@ -226,6 +226,7 @@ if __name__ == '__main__':
     sea_roughness = 0
 
     # GENERATION
+    shape = (size, size)  # does not seem to work for non-1x1 grids
     np.random.seed(random_seed)
     noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
 
