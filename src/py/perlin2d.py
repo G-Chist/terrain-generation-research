@@ -184,7 +184,6 @@ if __name__ == '__main__':  # testing
                                                             noise_filtered.shape)
                               )
 
-
     # VISUALIZE
     # print(grid_to_xyz(noise, -6, 6))
     plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
