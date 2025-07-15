@@ -154,11 +154,27 @@ def generate_fractal_noise_2d(
     return noise
 
 
-if __name__ == '__main__':  # Testing
+if __name__ == '__main__':  # testing
     import matplotlib.pyplot as plt
     np.random.seed(0)
-    noise = generate_perlin_noise_2d((1024, 1024), (8, 8))
-    print(grid_to_xyz(noise, -6, 6))
-    plt.imshow(noise, cmap='gray', interpolation='lanczos')
+    noise = generate_fractal_noise_2d((1024, 1024), (8, 8), octaves=8)
+
+    # PARAMETERS
+    min_amplitude = -1
+    max_amplitude = 1
+    sea_level = 0.2
+    sky_level = 0.8
+    sea_roughness = 5
+
+    # SCALING, TRANSFORMING, FILTERING
+    noise_scaled = np.interp(noise, (noise.min(),
+                                     noise.max()),
+                             (min_amplitude, max_amplitude))
+
+    noise_filtered = np.where(noise_scaled < sky_level, noise_scaled, sky_level)
+
+    # VISUALIZE
+    # print(grid_to_xyz(noise, -6, 6))
+    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
     plt.colorbar()
     plt.show()
