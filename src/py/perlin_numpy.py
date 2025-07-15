@@ -224,7 +224,7 @@ if __name__ == '__main__':
     max_amplitude = 1
     sea_level = 0.5
     sky_level = 1
-    sea_roughness = 0
+    sea_roughness = 0.3
 
     # GENERATION
     shape = (size, size)  # does not seem to work for non-1x1 grids
