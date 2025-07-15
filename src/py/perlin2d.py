@@ -24,6 +24,41 @@ SOFTWARE."""
 import numpy as np
 
 
+def grid_to_xyz(z_grid, start_coordinate, end_coordinate):
+    """
+    Convert a 2D grid of z-values into a (N*M)x3 array of [x, y, z] coordinates,
+    where x and y are linearly spaced between start_coordinate and end_coordinate.
+
+    Parameters:
+    - z_grid: 2D NumPy array of shape (N, M), representing z-values over a grid.
+    - start_coordinate: float, the starting coordinate value for both x and y axes.
+    - end_coordinate: float, the ending coordinate value for both x and y axes.
+
+    Returns:
+    - xyz: NumPy array of shape (N*M, 3), where each row is [x, y, z].
+    """
+
+    # Get the number of rows (N) and columns (M) from the shape of the z_grid
+    nrows, ncols = z_grid.shape
+
+    # Create a 1D array of x coordinates (length M) evenly spaced from start to end
+    x = np.linspace(start_coordinate, end_coordinate, ncols)
+
+    # Create a 1D array of y coordinates (length N) evenly spaced from start to end
+    y = np.linspace(start_coordinate, end_coordinate, nrows)
+
+    # Create a 2D meshgrid from the x and y coordinate vectors
+    # xx has shape (N, M), each row is a copy of x
+    # yy has shape (N, M), each column is a copy of y
+    xx, yy = np.meshgrid(x, y)
+
+    # Flatten xx, yy, and z_grid into 1D arrays (length N*M each),
+    # and stack them as columns to form an (N*M)x3 array of [x, y, z]
+    xyz = np.column_stack((xx.ravel(), yy.ravel(), z_grid.ravel()))
+
+    return xyz
+
+
 def interpolant(t):
     return t*t*t*(t*(t*6 - 15) + 10)
 
@@ -117,3 +152,13 @@ def generate_fractal_noise_2d(
         frequency *= lacunarity
         amplitude *= persistence
     return noise
+
+
+if __name__ == '__main__':  # Testing
+    import matplotlib.pyplot as plt
+    np.random.seed(0)
+    noise = generate_perlin_noise_2d((1024, 1024), (8, 8))
+    print(grid_to_xyz(noise, -6, 6))
+    plt.imshow(noise, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
