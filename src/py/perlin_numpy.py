@@ -221,8 +221,8 @@ if __name__ == '__main__':
 
     min_amplitude = 0
     max_amplitude = 1
-    sea_level = 0.1
-    sky_level = 0.8
+    sea_level = 0.3
+    sky_level = 1
     sea_roughness = 0
 
     # GENERATION
