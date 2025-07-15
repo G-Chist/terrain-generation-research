@@ -235,7 +235,7 @@ if __name__ == '__main__':
                                        noise.max()),
                              (min_amplitude, max_amplitude))
 
-    rand_range = (max_amplitude-min_amplitude)*0.1
+    rand_range = (max_amplitude-min_amplitude)*0.01
 
     noise_filtered = np.where(noise_filtered < sky_level,
                               noise_filtered,
