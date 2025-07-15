@@ -164,14 +164,26 @@ if __name__ == '__main__':  # testing
     max_amplitude = 1
     sea_level = 0.2
     sky_level = 0.8
-    sea_roughness = 5
+    sea_roughness = 0
 
     # SCALING, TRANSFORMING, FILTERING
-    noise_scaled = np.interp(noise, (noise.min(),
-                                     noise.max()),
+    noise_filtered = np.interp(noise, (noise.min(),
+                                       noise.max()),
                              (min_amplitude, max_amplitude))
 
-    noise_filtered = np.where(noise_scaled < sky_level, noise_scaled, sky_level)
+    rand_range = (max_amplitude-min_amplitude)*0.1
+
+    noise_filtered = np.where(noise_filtered < sky_level,
+                              noise_filtered,
+                              sky_level)
+
+    noise_filtered = np.where(noise_filtered > sea_level,
+                              noise_filtered,
+                              sea_level + np.random.uniform(-rand_range*sea_roughness,
+                                                            rand_range*sea_roughness,
+                                                            noise_filtered.shape)
+                              )
+
 
     # VISUALIZE
     # print(grid_to_xyz(noise, -6, 6))
