@@ -2,6 +2,7 @@ import numpy as np
 import bpy
 import csv
 
+
 def grid_to_xyz(z_grid, start_coordinate, end_coordinate):
     """
     Convert a 2D grid of z-values into a (N*M)x3 array of [x, y, z] coordinates,
