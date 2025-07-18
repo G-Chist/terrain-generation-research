@@ -3,6 +3,29 @@ import bpy
 import csv
 
 
+def blur_matrix(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
+    # Ensure kernel is square and has odd dimensions
+    assert kernel.ndim == 2 and kernel.shape[0] == kernel.shape[1], "Kernel must be square"
+    assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
+
+    kernel = kernel.astype(np.float32)
+    kernel /= kernel.sum()  # Normalize the kernel
+
+    k = kernel.shape[0] // 2  # Padding size
+
+    # Pad the matrix to preserve dimensions after convolution
+    padded = np.pad(matrix, pad_width=k, mode='edge')
+    output = np.zeros_like(matrix)
+
+    # Perform manual convolution
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            region = padded[i:i + 2 * k + 1, j:j + 2 * k + 1]
+            output[i, j] = np.sum(region * kernel)
+
+    return output
+
+
 def grid_to_xyz(z_grid, start_coordinate, end_coordinate):
     """
     Convert a 2D grid of z-values into a (N*M)x3 array of [x, y, z] coordinates,
@@ -231,6 +254,8 @@ if __name__ == '__main__':
     np.random.seed(random_seed)
     noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
 
+    noise = blur_matrix(noise, kernel=np.ones((5, 5), dtype=np.float32))  # 5x5 ones kernel to blur the noise
+
     # SCALING, TRANSFORMING, FILTERING
     noise_filtered = np.interp(noise, (noise.min(),
                                        noise.max()),
@@ -268,10 +293,10 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    # import matplotlib.pyplot as plt
-    # plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
-    # plt.colorbar()
-    # plt.show()
+    import matplotlib.pyplot as plt
+    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
