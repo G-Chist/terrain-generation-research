@@ -498,6 +498,21 @@ if __name__ == '__main__':
                                             sea_roughness=sea_roughness,
                                             kernels=kernels)
 
+    """
+    while sea_level > 0:  # create layered noise (TODO: OPTIMIZE THIS!!!)
+        sea_level -= 0.1
+        noise_filtered += generate_terrain_noise(size=size,
+                               res=res,
+                               octaves=octaves,
+                               random_seed=random_seed,
+                               min_amplitude=min_amplitude,
+                               max_amplitude=max_amplitude,
+                               sea_level=sea_level,
+                               sky_level=sky_level,
+                               sea_roughness=sea_roughness,
+                               kernels=kernels)
+    """
+
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
 
