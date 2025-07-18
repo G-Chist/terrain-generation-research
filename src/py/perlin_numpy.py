@@ -34,7 +34,7 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
     assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
 
     kernel = kernel.astype(np.float32)
-    kernel /= kernel.sum()  # normalize the kernel
+    kernel /= kernel.sum() if kernel.sum() != 0 else 1  # normalize if not edge detector
 
     k = kernel.shape[0] // 2  # padding size
 
@@ -49,6 +49,34 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
             output[i, j] = np.sum(region * kernel)
 
     return output
+
+
+def apply_sobel_magnitude(matrix):
+    """
+    Applies Sobel X and Y kernels to compute edge magnitude from the input matrix.
+
+    Parameters:
+        matrix (np.ndarray): The 2D input array (e.g. terrain heightmap).
+
+    Returns:
+        np.ndarray: A matrix of the same shape, with gradient magnitudes.
+    """
+    sobel_x = np.array([
+        [-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1]
+    ], dtype=np.float32)
+
+    sobel_y = np.array([
+        [-1, -2, -1],
+        [ 0,  0,  0],
+        [ 1,  2,  1]
+    ], dtype=np.float32)
+
+    gx = apply_convolution(matrix, sobel_x)
+    gy = apply_convolution(matrix, sobel_y)
+
+    return np.sqrt(gx ** 2 + gy ** 2)
 
 
 def grid_to_xyz(z_grid, start_coordinate, end_coordinate):
@@ -358,8 +386,7 @@ if __name__ == '__main__':
                                                             noise_filtered.shape)
                               )
 
-    noise_filtered = apply_convolution(noise_filtered,
-                                 kernel=np.ones((41, 41), dtype=np.float32))  # 41x41 ones kernel to blur the noise
+    noise_filtered = apply_sobel_magnitude(noise_filtered)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(shape[0], shape[1])
@@ -380,10 +407,10 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    # import matplotlib.pyplot as plt
-    # plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
-    # plt.colorbar()
-    # plt.show()
+    import matplotlib.pyplot as plt
+    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
