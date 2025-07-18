@@ -79,9 +79,9 @@ def generate_faces_from_grid(n_row, n_col):
     jj = jj.ravel()
 
     # Convert 2D grid indices to flat indices in the 1D vertex array
-    top_left     = ii +     jj * n_col
-    bottom_left  = ii + (jj + 1) * n_col
-    top_right    = (ii + 1) +     jj * n_col
+    top_left = ii + jj * n_col
+    bottom_left = ii + (jj + 1) * n_col
+    top_right = (ii + 1) + jj * n_col
     bottom_right = (ii + 1) + (jj + 1) * n_col
 
     # Create two triangles per grid cell
@@ -94,7 +94,7 @@ def generate_faces_from_grid(n_row, n_col):
 
 
 def interpolant(t):
-    return t*t*t*(t*(t*6 - 15) + 10)
+    return t * t * t * (t * (t * 6 - 15) + 10)
 
 
 def generate_perlin_noise_2d(
@@ -144,30 +144,30 @@ def generate_perlin_noise_2d(
 
     delta = (res[0] / shape[0], res[1] / shape[1])
     d = (shape[0] // res[0], shape[1] // res[1])
-    grid = np.mgrid[0:res[0]:delta[0], 0:res[1]:delta[1]]\
-             .transpose(1, 2, 0) % 1
+    grid = np.mgrid[0:res[0]:delta[0], 0:res[1]:delta[1]] \
+               .transpose(1, 2, 0) % 1
     # Gradients
-    angles = 2*np.pi*np.random.rand(res[0]+1, res[1]+1)
+    angles = 2 * np.pi * np.random.rand(res[0] + 1, res[1] + 1)
     gradients = np.dstack((np.cos(angles), np.sin(angles)))
     if tileable[0]:
-        gradients[-1,:] = gradients[0,:]
+        gradients[-1, :] = gradients[0, :]
     if tileable[1]:
-        gradients[:,-1] = gradients[:,0]
+        gradients[:, -1] = gradients[:, 0]
     gradients = gradients.repeat(d[0], 0).repeat(d[1], 1)
-    g00 = gradients[    :-d[0],    :-d[1]]
-    g10 = gradients[d[0]:     ,    :-d[1]]
-    g01 = gradients[    :-d[0],d[1]:     ]
-    g11 = gradients[d[0]:     ,d[1]:     ]
+    g00 = gradients[:-d[0], :-d[1]]
+    g10 = gradients[d[0]:, :-d[1]]
+    g01 = gradients[:-d[0], d[1]:]
+    g11 = gradients[d[0]:, d[1]:]
     # Ramps
-    n00 = np.sum(np.dstack((grid[:,:,0]  , grid[:,:,1]  )) * g00, 2)
-    n10 = np.sum(np.dstack((grid[:,:,0]-1, grid[:,:,1]  )) * g10, 2)
-    n01 = np.sum(np.dstack((grid[:,:,0]  , grid[:,:,1]-1)) * g01, 2)
-    n11 = np.sum(np.dstack((grid[:,:,0]-1, grid[:,:,1]-1)) * g11, 2)
+    n00 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1])) * g00, 2)
+    n10 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1])) * g10, 2)
+    n01 = np.sum(np.dstack((grid[:, :, 0], grid[:, :, 1] - 1)) * g01, 2)
+    n11 = np.sum(np.dstack((grid[:, :, 0] - 1, grid[:, :, 1] - 1)) * g11, 2)
     # Interpolation
     t = interpolant(grid)
-    n0 = n00*(1-t[:,:,0]) + t[:,:,0]*n10
-    n1 = n01*(1-t[:,:,0]) + t[:,:,0]*n11
-    return np.sqrt(2)*((1-t[:,:,1])*n0 + t[:,:,1]*n1)
+    n0 = n00 * (1 - t[:, :, 0]) + t[:, :, 0] * n10
+    n1 = n01 * (1 - t[:, :, 0]) + t[:, :, 0] * n11
+    return np.sqrt(2) * ((1 - t[:, :, 1]) * n0 + t[:, :, 1] * n1)
 
 
 def generate_fractal_noise_2d(
@@ -227,7 +227,7 @@ def generate_fractal_noise_2d(
     amplitude = 1
     for _ in range(octaves):
         noise += amplitude * generate_perlin_noise_2d(
-            shape, (frequency*res[0], frequency*res[1]), tileable, interpolant
+            shape, (frequency * res[0], frequency * res[1]), tileable, interpolant
         )
         frequency *= lacunarity
         amplitude *= persistence
@@ -235,7 +235,6 @@ def generate_fractal_noise_2d(
 
 
 if __name__ == '__main__':
-
     # PARAMETERS
     random_seed = 123
 
@@ -254,14 +253,12 @@ if __name__ == '__main__':
     np.random.seed(random_seed)
     noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
 
-    noise = blur_matrix(noise, kernel=np.ones((5, 5), dtype=np.float32))  # 5x5 ones kernel to blur the noise
-
     # SCALING, TRANSFORMING, FILTERING
     noise_filtered = np.interp(noise, (noise.min(),
                                        noise.max()),
-                             (min_amplitude, max_amplitude))
+                               (min_amplitude, max_amplitude))
 
-    rand_range = (max_amplitude-min_amplitude)*0.01
+    rand_range = (max_amplitude - min_amplitude) * 0.01
 
     noise_filtered = np.where(noise_filtered < sky_level,
                               noise_filtered,
@@ -269,10 +266,13 @@ if __name__ == '__main__':
 
     noise_filtered = np.where(noise_filtered > sea_level,
                               noise_filtered,
-                              sea_level + np.random.uniform(-rand_range*sea_roughness,
-                                                            rand_range*sea_roughness,
+                              sea_level + np.random.uniform(-rand_range * sea_roughness,
+                                                            rand_range * sea_roughness,
                                                             noise_filtered.shape)
                               )
+
+    noise_filtered = blur_matrix(noise_filtered,
+                                 kernel=np.ones((41, 41), dtype=np.float32))  # 41x41 ones kernel to blur the noise
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(shape[0], shape[1])
@@ -293,10 +293,10 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    import matplotlib.pyplot as plt
-    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
-    plt.colorbar()
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
+    # plt.colorbar()
+    # plt.show()
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
