@@ -334,19 +334,69 @@ def generate_fractal_noise_2d(
     return noise
 
 
+def generate_terrain_noise(
+        size=1024,
+        res=(8, 8),
+        octaves=8,
+        random_seed=123,
+        min_amplitude=0.0,
+        max_amplitude=1.0,
+        sea_level=0.5,
+        sky_level=1.0,
+        sea_roughness=0.3,
+        *kernels
+):
+    """
+    Generate filtered Perlin-based terrain noise with optional convolution kernels.
+
+    Parameters:
+        size (int): Width and height of the terrain grid.
+        res (tuple): Base resolution (periods) of the Perlin noise grid.
+        octaves (int): Number of fractal noise layers to combine.
+        random_seed (int): Seed for NumPy random generator.
+        min_amplitude (float): Minimum amplitude after normalization.
+        max_amplitude (float): Maximum amplitude after normalization.
+        sea_level (float): Threshold below which terrain is considered 'sea'.
+        sky_level (float): Threshold above which terrain is flattened to sky level.
+        sea_roughness (float): Random fluctuation intensity added near sea level.
+        *kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+
+    Returns:
+        np.ndarray: The final filtered terrain heightmap (2D).
+    """
+
+    shape = (size, size)
+    np.random.seed(random_seed)
+
+    # Generate fractal noise
+    noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
+
+    # Normalize noise
+    noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
+    rand_range = (max_amplitude - min_amplitude) * 0.01
+
+    # Clip to sky level
+    noise_filtered = np.where(noise_filtered < sky_level, noise_filtered, sky_level)
+
+    # Add randomness below sea level
+    noise_filtered = np.where(
+        noise_filtered > sea_level,
+        noise_filtered,
+        sea_level + np.random.uniform(
+            -rand_range * sea_roughness,
+            rand_range * sea_roughness,
+            noise_filtered.shape
+        )
+    )
+
+    # Apply optional convolution kernels
+    for kernel in kernels:
+        noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
+
+    return noise_filtered
+
+
 if __name__ == '__main__':
-    # PARAMETERS
-    random_seed = 123
-
-    size = 1024
-    res = (8, 8)
-    octaves = 8
-
-    min_amplitude = 0
-    max_amplitude = 1
-    sea_level = 0.5
-    sky_level = 1
-    sea_roughness = 0.3
 
     # DIFFERENT USEFUL KERNEL EXAMPLES
     emboss = np.array([
@@ -416,33 +466,32 @@ if __name__ == '__main__':
         [1, 2, 1]
     ], dtype=np.float32)
 
+    # PARAMETERS
+    random_seed = 123
+
+    size = 1024
+    res = (8, 8)
+    octaves = 8
+
+    min_amplitude = 0
+    max_amplitude = 1
+    sea_level = 0.5
+    sky_level = 1
+    sea_roughness = 0.3
+
     # GENERATION
-    shape = (size, size)  # does not seem to work for non-1x1 grids
-    np.random.seed(random_seed)
-    noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
-
-    # SCALING, TRANSFORMING, FILTERING
-    noise_filtered = np.interp(noise, (noise.min(),
-                                       noise.max()),
-                               (min_amplitude, max_amplitude))
-
-    rand_range = (max_amplitude - min_amplitude) * 0.01
-
-    noise_filtered = np.where(noise_filtered < sky_level,
-                              noise_filtered,
-                              sky_level)
-
-    noise_filtered = np.where(noise_filtered > sea_level,
-                              noise_filtered,
-                              sea_level + np.random.uniform(-rand_range * sea_roughness,
-                                                            rand_range * sea_roughness,
-                                                            noise_filtered.shape)
-                              )
-
-    noise_filtered = apply_convolution(matrix=noise_filtered, kernel=gaussian_kernel_5x5)
+    noise_filtered = generate_terrain_noise(random_seed=random_seed,
+                                            size=size,
+                                            res=res,
+                                            octaves=octaves,
+                                            min_amplitude=min_amplitude,
+                                            max_amplitude=max_amplitude,
+                                            sea_level=sea_level,
+                                            sea_roughness=sea_roughness,
+                                            kernels=[emboss, box_blur_3x3])
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
-    faces = generate_faces_from_grid(shape[0], shape[1])
+    faces = generate_faces_from_grid(size, size)
 
     # create mesh in Blender
     perlin_mesh = bpy.data.meshes.new("perlin_mesh")
