@@ -273,6 +273,68 @@ if __name__ == '__main__':
     sky_level = 1
     sea_roughness = 0.3
 
+    # DIFFERENT USEFUL KERNEL EXAMPLES
+    emboss = np.array([
+        [-2, -1, 0],
+        [-1, 1, 1],
+        [0, 1, 2]
+    ], dtype=np.float32)
+
+    sharpen = np.array([
+        [0, -1, 0],
+        [-1, 5, -1],
+        [0, -1, 0]
+    ], dtype=np.float32)
+
+    laplacian = np.array([
+        [0, -1, 0],
+        [-1, 4, -1],
+        [0, -1, 0]
+    ], dtype=np.float32)
+
+    sobel_x = np.array([
+        [-1, 0, 1],
+        [-2, 0, 2],
+        [-1, 0, 1]
+    ], dtype=np.float32)
+
+    sobel_y = np.array([
+        [-1, -2, -1],
+        [0, 0, 0],
+        [1, 2, 1]
+    ], dtype=np.float32)
+
+    box_blur_3x3 = np.ones((3, 3), dtype=np.float32)
+    box_blur_3x3 /= box_blur_3x3.sum()
+
+    gaussian_kernel_3x3 = np.array([
+        [1, 2, 1],
+        [2, 4, 2],
+        [1, 2, 1]
+    ], dtype=np.float32)
+    gaussian_kernel_3x3 /= gaussian_kernel_3x3.sum()
+
+    gaussian_kernel_5x5 = np.array([
+        [1, 4, 6, 4, 1],
+        [4, 16, 24, 16, 4],
+        [6, 24, 36, 24, 6],
+        [4, 16, 24, 16, 4],
+        [1, 4, 6, 4, 1]
+    ], dtype=np.float32)
+    gaussian_kernel_5x5 /= gaussian_kernel_5x5.sum()
+
+    kernel_ripple = np.array([
+        [0, -1, 0],
+        [-1, 5, -1],
+        [0, -1, 0]
+    ], dtype=np.float32)
+
+    kernel_smoother = np.array([
+        [1, 2, 1],
+        [2, 4, 2],
+        [1, 2, 1]
+    ], dtype=np.float32)
+
     # GENERATION
     shape = (size, size)  # does not seem to work for non-1x1 grids
     np.random.seed(random_seed)
