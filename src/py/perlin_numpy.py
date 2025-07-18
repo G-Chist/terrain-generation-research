@@ -499,7 +499,7 @@ if __name__ == '__main__':
                                             kernels=kernels)
 
     """
-    while sea_level > 0:  # create layered noise (TODO: OPTIMIZE THIS!!!)
+    while sea_level > 0:  # create layered noise (TODO: OPTIMIZE THIS!!! THE APPROACH USED HERE IS VERY NAIVE AND INEFFECTIVE)
         sea_level -= 0.1
         noise_filtered += generate_terrain_noise(size=size,
                                res=res,
