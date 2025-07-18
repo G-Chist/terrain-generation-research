@@ -34,9 +34,9 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
     assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
 
     kernel = kernel.astype(np.float32)
-    kernel /= kernel.sum()  # Normalize the kernel
+    kernel /= kernel.sum()  # normalize the kernel
 
-    k = kernel.shape[0] // 2  # Padding size
+    k = kernel.shape[0] // 2  # padding size
 
     # Pad the matrix to preserve dimensions after convolution
     padded = np.pad(matrix, pad_width=k, mode='edge')
