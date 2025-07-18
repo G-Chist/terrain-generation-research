@@ -1,3 +1,50 @@
+"""
+PLEASE READ THIS COMMENT BEFORE USING THE CODE!
+
+------------------------------------------
+Perlin Noise Terrain Generator for Blender
+------------------------------------------
+
+This script generates a procedural terrain mesh using fractal Perlin noise
+and imports it directly into Blender. It also optionally applies various
+filters (e.g., Gaussian blur) and exports vertex data to a CSV file.
+
+Key Components:
+---------------
+- Perlin & Fractal Noise Generation:
+    Creates smooth 2D noise patterns for terrain modeling.
+- Image Filtering:
+    Applies convolution kernels (e.g., Gaussian blur, Sobel) to refine features.
+- Mesh Conversion:
+    Converts the 2D noise map into a 3D mesh grid (x, y, z) suitable for Blender.
+- Blender Integration:
+    Automatically creates and links a mesh object in the Blender scene.
+- CSV Export:
+    Saves vertex positions to `vertices.csv` in the current .blend file directory.
+
+Modules Used:
+-------------
+- `numpy`: Matrix operations and numerical tools.
+- `bpy`: Blender's Python API for creating objects and meshes.
+- `csv`: Exporting vertex coordinates to CSV.
+
+Usage Instructions:
+-------------------
+Run the script inside Blender's Scripting workspace. See the bottom of the file
+for detailed step-by-step instructions on how to load, execute, and visualize
+the terrain mesh.
+
+Author:
+-------
+Original Perlin/Fractal noise code by Pierre Vigier (MIT License).
+Script extended and integrated into Blender by Matvei Shestopalov.
+
+License:
+--------
+This script includes components under the MIT License. See inline comments for license details.
+"""
+
+
 import numpy as np
 import bpy
 import csv
