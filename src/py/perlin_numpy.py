@@ -344,7 +344,7 @@ def generate_terrain_noise(
         sea_level=0.5,
         sky_level=1.0,
         sea_roughness=0.3,
-        *kernels
+        kernels=None  # accepts a single kernel or list/tuple of kernels
 ):
     """
     Generate filtered Perlin-based terrain noise with optional convolution kernels.
@@ -389,7 +389,12 @@ def generate_terrain_noise(
         )
     )
 
-    # Apply optional convolution kernels
+    # Apply convolution kernel / kernels
+    if kernels is None:
+        kernels = []
+    elif not isinstance(kernels, (list, tuple)):
+        kernels = [kernels]
+
     for kernel in kernels:
         noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
 
@@ -479,16 +484,19 @@ if __name__ == '__main__':
     sky_level = 1
     sea_roughness = 0.3
 
+    kernels = (box_blur_3x3)
+
     # GENERATION
-    noise_filtered = generate_terrain_noise(random_seed=random_seed,
-                                            size=size,
+    noise_filtered = generate_terrain_noise(size=size,
                                             res=res,
                                             octaves=octaves,
+                                            random_seed=random_seed,
                                             min_amplitude=min_amplitude,
                                             max_amplitude=max_amplitude,
                                             sea_level=sea_level,
+                                            sky_level=sky_level,
                                             sea_roughness=sea_roughness,
-                                            kernels=[emboss, box_blur_3x3])
+                                            kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
