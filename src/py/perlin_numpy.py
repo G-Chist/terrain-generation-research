@@ -335,6 +335,12 @@ if __name__ == '__main__':
     box_blur_3x3 = np.ones((3, 3), dtype=np.float32)
     box_blur_3x3 /= box_blur_3x3.sum()
 
+    box_blur_7x7 = np.ones((7, 7), dtype=np.float32)
+    box_blur_7x7 /= box_blur_7x7.sum()
+
+    box_blur_25x25 = np.ones((25, 25), dtype=np.float32)
+    box_blur_25x25 /= box_blur_25x25.sum()
+
     gaussian_kernel_3x3 = np.array([
         [1, 2, 1],
         [2, 4, 2],
@@ -386,7 +392,7 @@ if __name__ == '__main__':
                                                             noise_filtered.shape)
                               )
 
-    noise_filtered = apply_sobel_magnitude(noise_filtered)
+    noise_filtered = apply_convolution(matrix=noise_filtered, kernel=gaussian_kernel_5x5)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(shape[0], shape[1])
@@ -407,10 +413,10 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    import matplotlib.pyplot as plt
-    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
-    plt.colorbar()
-    plt.show()
+    # import matplotlib.pyplot as plt
+    # plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
+    # plt.colorbar()
+    # plt.show()
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender

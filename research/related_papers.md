@@ -2,3 +2,5 @@
   - procedural city/road generation
 - https://idsia-robotics.github.io/files/publications/chavez-garcia2018.pdf
   - learning ground traversability from simulations
+- https://arxiv.org/abs/2501.02172#
+  - Multifractal Terrain Generation for Evaluating Autonomous Off-Road Ground Vehicles
