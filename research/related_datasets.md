@@ -1,2 +1,4 @@
 - https://earthexplorer.usgs.gov/
   - elevation datasets and more
+- https://www.kaggle.com/datasets/tpapp157/earth-terrain-height-and-segmentation-map-images
+  - Earth height map images
