@@ -391,6 +391,12 @@ def generate_terrain_noise(
         )
     )
 
+    for _ in range(layers):
+        noise_filtered += noise_filtered  # create layered terrain
+
+    # Normalize again
+    noise_filtered = np.interp(noise_filtered, (noise_filtered.min(), noise_filtered.max()), (min_amplitude, max_amplitude))
+
     # Apply convolution kernel / kernels
     if kernels is None:
         kernels = []
@@ -399,12 +405,6 @@ def generate_terrain_noise(
 
     for kernel in kernels:
         noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
-
-    for _ in range(layers):
-        noise_filtered += noise_filtered  # create layered terrain
-
-    # Normalize again
-    noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
 
     return noise_filtered
 
@@ -488,11 +488,11 @@ if __name__ == '__main__':
 
     min_amplitude = 0
     max_amplitude = 1
-    sea_level = 0.5
+    sea_level = 0.2
     sky_level = 1
     sea_roughness = 0.3
 
-    layers = 2
+    layers = 5
 
     kernels = (box_blur_3x3)
 
