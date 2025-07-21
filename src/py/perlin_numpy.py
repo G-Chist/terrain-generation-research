@@ -505,7 +505,7 @@ if __name__ == '__main__':
     octaves = 8
 
     min_amplitude = 0
-    max_amplitude = 1
+    max_amplitude = 1  # TODO: debug faulty terrain when min_amplitude, max_amplitude != 0, 1
     sea_level = 0.2
     sky_level = 1
     sea_roughness = 0.3
