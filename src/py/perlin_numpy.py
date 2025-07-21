@@ -508,7 +508,7 @@ if __name__ == '__main__':
     x_trend = np.linspace(0, 10, size)
     y_trend = np.linspace(0, 10, size)
     X_trend, Y_trend = np.meshgrid(x_trend, y_trend)
-    trend = 3*np.sin(X_trend + Y_trend)
+    trend = 3*np.sin(X_trend + 2*Y_trend) + 4*np.cos(1.7*X_trend + 0.5*Y_trend)
 
     # GENERATION
     noise_filtered = generate_terrain_noise(size=size,
@@ -543,10 +543,10 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    # import matplotlib.pyplot as plt
-    # plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
-    # plt.colorbar()
-    # plt.show()
+    import matplotlib.pyplot as plt
+    plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
