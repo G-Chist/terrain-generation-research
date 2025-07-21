@@ -571,14 +571,10 @@ if __name__ == '__main__':
     sky_level = 1
     sea_roughness = 0.3
 
-    blend_decay = 0.5
-    layers = 4
-    sea_step = 0.1
-
     kernels = (box_blur_3x3)
 
     # GENERATION
-    noise_filtered = generate_terrain_noise_layered(size=size,
+    noise_filtered = generate_terrain_noise(size=size,
                                             res=res,
                                             octaves=octaves,
                                             random_seed=random_seed,
@@ -587,9 +583,6 @@ if __name__ == '__main__':
                                             sea_level=sea_level,
                                             sky_level=sky_level,
                                             sea_roughness=sea_roughness,
-                                            blend_decay=blend_decay,
-                                            layers=layers,
-                                            sea_step=0.1,
                                             kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
