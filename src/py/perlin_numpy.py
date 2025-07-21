@@ -344,6 +344,7 @@ def generate_terrain_noise(
         sea_level=0.5,
         sky_level=1.0,
         sea_roughness=0.3,
+        layers=0,
         kernels=None  # accepts a single kernel or list/tuple of kernels
 ):
     """
@@ -359,7 +360,8 @@ def generate_terrain_noise(
         sea_level (float): Threshold below which terrain is considered 'sea'.
         sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness (float): Random fluctuation intensity added near sea level.
-        *kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+        layers (int): Number of times to add the terrain to itself to create a layered terrain.
+        kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 
     Returns:
         np.ndarray: The final filtered terrain heightmap (2D).
@@ -398,94 +400,13 @@ def generate_terrain_noise(
     for kernel in kernels:
         noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
 
+    for _ in range(layers):
+        noise_filtered += noise_filtered  # create layered terrain
+
+    # Normalize again
+    noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
+
     return noise_filtered
-
-
-def generate_terrain_noise_layered(
-        size=1024,
-        res=(8, 8),
-        octaves=8,
-        random_seed=123,
-        min_amplitude=0.0,
-        max_amplitude=1.0,
-        sea_level=0.5,
-        sky_level=1.0,
-        sea_roughness=0.3,
-        kernels=None,
-        layers=4,
-        sea_step=0.1,
-        blend_decay=0.5
-):
-    """
-    Generate layered terrain noise by stacking multiple sea-level-lowered layers.
-
-    Parameters:
-        size (int): Grid width and height.
-        res (tuple): Perlin resolution.
-        octaves (int): Number of fractal octaves.
-        random_seed (int): Base seed for reproducibility.
-        min_amplitude (float): Minimum terrain height.
-        max_amplitude (float): Maximum terrain height.
-        sea_level (float): Starting sea level.
-        sky_level (float): Sky flattening threshold.
-        sea_roughness (float): Intensity of sea surface randomness.
-        kernels (array or list of arrays): Optional convolution kernels.
-        layers (int): Number of layers to stack below the starting sea level.
-        sea_step (float): How much lower each subsequent sea_level is.
-        blend_decay (float): Attenuation factor per layer (0-1) for blending strength.
-
-    Returns:
-        np.ndarray: Final layered terrain heightmap.
-    """
-
-    shape = (size, size)
-    np.random.seed(random_seed)
-
-    # Generate and normalize base fractal noise
-    base_noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
-    base_noise = np.interp(base_noise, (base_noise.min(), base_noise.max()), (min_amplitude, max_amplitude))
-
-    # Apply kernels to the base noise if needed
-    if kernels is None:
-        kernels = []
-    elif not isinstance(kernels, (list, tuple)):
-        kernels = [kernels]
-    for kernel in kernels:
-        base_noise = apply_convolution(matrix=base_noise, kernel=kernel)
-
-    # Flatten to sky level
-    base_noise = np.where(base_noise < sky_level, base_noise, sky_level)
-
-    # Generate single random layer for sea roughness noise
-    rand_range = (max_amplitude - min_amplitude) * 0.01
-    sea_noise = sea_level + np.random.uniform(
-        -rand_range * sea_roughness,
-        rand_range * sea_roughness,
-        base_noise.shape
-    )
-
-    # Start with original sea_level mask
-    combined = np.where(base_noise > sea_level, base_noise, sea_noise)
-
-    current_sea_level = sea_level
-    blend_factor = 1.0
-
-    for i in range(1, layers):
-        current_sea_level -= sea_step
-        if current_sea_level <= min_amplitude:
-            break
-
-        # Blend in deeper layer
-        layer_mask = base_noise <= current_sea_level
-        layer_noise = np.where(layer_mask, sea_noise, 0)
-        combined += blend_factor * layer_noise
-
-        blend_factor *= blend_decay
-
-    # Final normalization
-    combined = np.interp(combined, (combined.min(), combined.max()), (min_amplitude, max_amplitude))
-    return combined
-
 
 
 if __name__ == '__main__':
@@ -571,6 +492,8 @@ if __name__ == '__main__':
     sky_level = 1
     sea_roughness = 0.3
 
+    layers = 2
+
     kernels = (box_blur_3x3)
 
     # GENERATION
@@ -583,6 +506,7 @@ if __name__ == '__main__':
                                             sea_level=sea_level,
                                             sky_level=sky_level,
                                             sea_roughness=sea_roughness,
+                                            layers=layers,
                                             kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
