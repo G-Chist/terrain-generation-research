@@ -335,18 +335,18 @@ def generate_fractal_noise_2d(
 
 
 def generate_terrain_noise(
-        size=1024,
-        res=(8, 8),
-        octaves=8,
-        random_seed=123,
-        min_amplitude=0.0,
-        max_amplitude=1.0,
-        sea_level=0.5,
-        sky_level=1.0,
-        sea_roughness=0.3,
-        layers=0,
-        trend=None,  # accepts None or a size x size np.ndarray
-        kernels=None  # accepts a single kernel or list/tuple of kernels
+        size=1024,                         # size (int): Width and height of the terrain grid.
+        res=(8, 8),                        # res (tuple): Base resolution (periods) of the Perlin noise grid.
+        octaves=8,                         # octaves (int): Number of fractal noise layers to combine.
+        random_seed=123,                   # random_seed (int): Seed for NumPy random generator.
+        min_amplitude=0.0,                 # min_amplitude (float): Minimum amplitude after normalization.
+        max_amplitude=1.0,                 # max_amplitude (float): Maximum amplitude after normalization.
+        sea_level=0.5,                     # sea_level (float): Threshold below which terrain is considered 'sea'.
+        sky_level=1.0,                     # sky_level (float): Threshold above which terrain is flattened to sky level.
+        sea_roughness=0.3,                 # sea_roughness (float): Random fluctuation intensity added near sea level.
+        layers=0,                          # layers (int): Number of times to add the terrain to itself.
+        trend=None,                        # trend(np.ndarray): An optional trend to add to the surface.
+        kernels=None                       # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 ):
     """
     Generate filtered Perlin-based terrain noise with optional convolution kernels.
