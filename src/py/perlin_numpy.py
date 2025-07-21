@@ -348,6 +348,7 @@ def generate_terrain_noise(
         trend=None,                        # trend (np.ndarray): An optional trend to add to the surface.
         terrace=False,                     # terrace (bool): Whether or not to apply terracing to the terrain.
         terrace_steepness=11,              # terrace_steepness (int): Defines how steep terracing is.
+        terrace_frequency=10,              # terrace_frequency (int): Defines the level of detail for terracing.
         kernels=None                       # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 ):
     """
@@ -407,7 +408,9 @@ def generate_terrain_noise(
 
     # Terrace the noise
     if terrace:
-        noise_filtered = np.sin((noise_filtered - np.round(noise_filtered * 10) / 10) * 2.45)**11 + np.round(noise_filtered * 10) / 10
+        freq = terrace_frequency
+        step = np.round(noise_filtered * freq) / freq
+        noise_filtered = np.sin((noise_filtered - step) * 2.45) ** terrace_steepness + step
 
     # Apply convolution kernel / kernels
     if kernels is None:
@@ -513,6 +516,7 @@ if __name__ == '__main__':
 
     terrace = True
     terrace_steepness = 11
+    terrace_frequency = 4
 
     # DEFINE TREND
     trend_seed = 42
@@ -536,6 +540,7 @@ if __name__ == '__main__':
                                             trend=trend,
                                             terrace=terrace,
                                             terrace_steepness=terrace_steepness,
+                                            terrace_frequency=terrace_frequency,
                                             kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
@@ -557,12 +562,12 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
-    """
+    #"""
     import matplotlib.pyplot as plt
     plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
     plt.colorbar()
     plt.show()
-    """
+    #"""
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
