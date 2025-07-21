@@ -503,6 +503,8 @@ if __name__ == '__main__':
     kernels = (box_blur_3x3)
 
     # DEFINE TREND
+    trend_seed = 42
+
     x_trend = np.linspace(0, 10, size)
     y_trend = np.linspace(0, 10, size)
     X_trend, Y_trend = np.meshgrid(x_trend, y_trend)
