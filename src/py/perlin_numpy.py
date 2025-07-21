@@ -345,7 +345,9 @@ def generate_terrain_noise(
         sky_level=1.0,                     # sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness=0.3,                 # sea_roughness (float): Random fluctuation intensity added near sea level.
         layers=0,                          # layers (int): Number of times to add the terrain to itself.
-        trend=None,                        # trend(np.ndarray): An optional trend to add to the surface.
+        trend=None,                        # trend (np.ndarray): An optional trend to add to the surface.
+        terrace=False,                     # terrace (bool): Whether or not to apply terracing to the terrain.
+        terrace_steepness=11,              # terrace_steepness (int): Defines how steep terracing is.
         kernels=None                       # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 ):
     """
@@ -403,6 +405,10 @@ def generate_terrain_noise(
     # Normalize again
     noise_filtered = np.interp(noise_filtered, (noise_filtered.min(), noise_filtered.max()), (min_amplitude, max_amplitude))
 
+    # Terrace the noise
+    if terrace:
+        noise_filtered = np.sin((noise_filtered - np.round(noise_filtered * 10) / 10) * 2.45)**11 + np.round(noise_filtered * 10) / 10
+
     # Apply convolution kernel / kernels
     if kernels is None:
         kernels = []
@@ -454,6 +460,9 @@ if __name__ == '__main__':
     box_blur_7x7 = np.ones((7, 7), dtype=np.float32)
     box_blur_7x7 /= box_blur_7x7.sum()
 
+    box_blur_11x11 = np.ones((11, 11), dtype=np.float32)
+    box_blur_11x11 /= box_blur_11x11.sum()
+
     box_blur_25x25 = np.ones((25, 25), dtype=np.float32)
     box_blur_25x25 /= box_blur_25x25.sum()
 
@@ -500,7 +509,10 @@ if __name__ == '__main__':
 
     layers = 5
 
-    kernels = (box_blur_3x3)
+    kernels = (box_blur_25x25)
+
+    terrace = True
+    terrace_steepness = 11
 
     # DEFINE TREND
     trend_seed = 42
@@ -522,6 +534,8 @@ if __name__ == '__main__':
                                             sea_roughness=sea_roughness,
                                             layers=layers,
                                             trend=trend,
+                                            terrace=terrace,
+                                            terrace_steepness=terrace_steepness,
                                             kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
@@ -543,10 +557,12 @@ if __name__ == '__main__':
         writer.writerows(vertices)
 
     # VISUALIZE
+    """
     import matplotlib.pyplot as plt
     plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
     plt.colorbar()
     plt.show()
+    """
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
