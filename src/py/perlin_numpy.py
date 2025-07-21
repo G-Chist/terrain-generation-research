@@ -345,6 +345,7 @@ def generate_terrain_noise(
         sky_level=1.0,
         sea_roughness=0.3,
         layers=0,
+        trend=None,  # accepts None or a size x size np.ndarray
         kernels=None  # accepts a single kernel or list/tuple of kernels
 ):
     """
@@ -361,6 +362,7 @@ def generate_terrain_noise(
         sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness (float): Random fluctuation intensity added near sea level.
         layers (int): Number of times to add the terrain to itself to create a layered terrain.
+        trend(np.ndarray): An optional trend to add to the surface.
         kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 
     Returns:
@@ -393,6 +395,10 @@ def generate_terrain_noise(
 
     for _ in range(layers):
         noise_filtered += noise_filtered  # create layered terrain
+
+    # Add trend
+    if trend is not None:
+        noise_filtered += trend
 
     # Normalize again
     noise_filtered = np.interp(noise_filtered, (noise_filtered.min(), noise_filtered.max()), (min_amplitude, max_amplitude))
@@ -496,6 +502,12 @@ if __name__ == '__main__':
 
     kernels = (box_blur_3x3)
 
+    # DEFINE TREND
+    x_trend = np.linspace(0, 10, size)
+    y_trend = np.linspace(0, 10, size)
+    X_trend, Y_trend = np.meshgrid(x_trend, y_trend)
+    trend = 3*np.sin(X_trend + Y_trend)
+
     # GENERATION
     noise_filtered = generate_terrain_noise(size=size,
                                             res=res,
@@ -507,6 +519,7 @@ if __name__ == '__main__':
                                             sky_level=sky_level,
                                             sea_roughness=sea_roughness,
                                             layers=layers,
+                                            trend=trend,
                                             kernels=kernels)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
