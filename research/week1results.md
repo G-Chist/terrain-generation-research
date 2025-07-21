@@ -26,3 +26,4 @@
 - related ideas
   - to generate paths, we can run a pathfinding algorithm such as A* on the generated terrain and adjust nodes adjacent to the discovered path to form a smooth road-like path
     - setting a reasonably high sea_level seems to generate natural paths (bodies of water)
+    - adding an appropriate trend can generate path-like minima
