@@ -3,6 +3,77 @@ import numpy as np
 import bpy
 import os
 
+# DIFFERENT USEFUL KERNEL EXAMPLES
+emboss = np.array([
+    [-2, -1, 0],
+    [-1, 1, 1],
+    [0, 1, 2]
+], dtype=np.float32)
+
+sharpen = np.array([
+    [0, -1, 0],
+    [-1, 5, -1],
+    [0, -1, 0]
+], dtype=np.float32)
+
+laplacian = np.array([
+    [0, -1, 0],
+    [-1, 4, -1],
+    [0, -1, 0]
+], dtype=np.float32)
+
+sobel_x = np.array([
+    [-1, 0, 1],
+    [-2, 0, 2],
+    [-1, 0, 1]
+], dtype=np.float32)
+
+sobel_y = np.array([
+    [-1, -2, -1],
+    [0, 0, 0],
+    [1, 2, 1]
+], dtype=np.float32)
+
+box_blur_3x3 = np.ones((3, 3), dtype=np.float32)
+box_blur_3x3 /= box_blur_3x3.sum()
+
+box_blur_7x7 = np.ones((7, 7), dtype=np.float32)
+box_blur_7x7 /= box_blur_7x7.sum()
+
+box_blur_11x11 = np.ones((11, 11), dtype=np.float32)
+box_blur_11x11 /= box_blur_11x11.sum()
+
+box_blur_25x25 = np.ones((25, 25), dtype=np.float32)
+box_blur_25x25 /= box_blur_25x25.sum()
+
+gaussian_kernel_3x3 = np.array([
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
+], dtype=np.float32)
+gaussian_kernel_3x3 /= gaussian_kernel_3x3.sum()
+
+gaussian_kernel_5x5 = np.array([
+    [1, 4, 6, 4, 1],
+    [4, 16, 24, 16, 4],
+    [6, 24, 36, 24, 6],
+    [4, 16, 24, 16, 4],
+    [1, 4, 6, 4, 1]
+], dtype=np.float32)
+gaussian_kernel_5x5 /= gaussian_kernel_5x5.sum()
+
+kernel_ripple = np.array([
+    [0, -1, 0],
+    [-1, 5, -1],
+    [0, -1, 0]
+], dtype=np.float32)
+
+kernel_smoother = np.array([
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
+], dtype=np.float32)
+
 
 def load_bw_image_as_normalized_array(filepath):
     if not os.path.isfile(filepath):
@@ -90,16 +161,65 @@ def generate_faces_from_grid(n_row, n_col):
     return faces
 
 
+def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
+    """
+        Apply a 2D convolution operation to a matrix using a given square kernel.
+
+        This function performs manual convolution of the input matrix with the specified
+        kernel, while preserving the original matrix dimensions. It pads the input using
+        edge padding to ensure that border elements are convolved correctly.
+
+        Parameters:
+            matrix (np.ndarray): A 2D NumPy array (heightmap or image) to be filtered.
+            kernel (np.ndarray, optional): A square 2D NumPy array with odd dimensions
+                representing the convolution kernel. Defaults to a 3x3 uniform blur kernel.
+
+        Returns:
+            np.ndarray: A 2D NumPy array of the same shape as `matrix`, containing the
+            result of the convolution operation.
+
+        Raises:
+            AssertionError: If the kernel is not square or its dimensions are not odd.
+
+        Example:
+            >>> matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.float32)
+            >>> kernel = np.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]], dtype=np.float32)
+            >>> result = apply_convolution(matrix, kernel)
+    """
+
+    # Ensure kernel is square and has odd dimensions
+    assert kernel.ndim == 2 and kernel.shape[0] == kernel.shape[1], "Kernel must be square"
+    assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
+
+    kernel = kernel.astype(np.float32)
+    kernel /= kernel.sum() if kernel.sum() != 0 else 1  # normalize if not edge detector
+
+    k = kernel.shape[0] // 2  # padding size
+
+    # Pad the matrix to preserve dimensions after convolution
+    padded = np.pad(matrix, pad_width=k, mode='edge')
+    output = np.zeros_like(matrix)
+
+    # Perform manual convolution
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            region = padded[i:i + 2 * k + 1, j:j + 2 * k + 1]
+            output[i, j] = np.sum(region * kernel)
+
+    return output
+
+
 if __name__ == "__main__":
     terrain = load_bw_image_as_normalized_array("C:\\Users\\79140\\PycharmProjects\\procedural-terrain-generation-blender\\data\\terrain_example.png")
+    terrain = apply_convolution(matrix=terrain, kernel=box_blur_7x7)  # smoothen
     vertices = grid_to_xyz(terrain, start_coordinate=-6, end_coordinate=6).tolist()
     size = terrain.shape[0]
     faces = generate_faces_from_grid(size, size)
 
     # create mesh in Blender
-    perlin_mesh = bpy.data.meshes.new("perlin_mesh")
-    perlin_mesh.from_pydata(vertices, [], faces)
-    perlin_terrain = bpy.data.objects.new("perlin_terrain", perlin_mesh)
+    real_mesh = bpy.data.meshes.new("real_mesh")
+    real_mesh.from_pydata(vertices, [], faces)
+    real_terrain = bpy.data.objects.new("real_terrain", real_mesh)
     terrain_collection = bpy.data.collections.new("terrain_collection")
     bpy.context.scene.collection.children.link(terrain_collection)
-    terrain_collection.objects.link(perlin_terrain)
+    terrain_collection.objects.link(real_terrain)
