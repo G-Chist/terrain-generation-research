@@ -339,8 +339,6 @@ def generate_terrain_noise(
         res=(8, 8),                        # res (tuple): Base resolution (periods) of the Perlin noise grid.
         octaves=8,                         # octaves (int): Number of fractal noise layers to combine.
         random_seed=123,                   # random_seed (int): Seed for NumPy random generator.
-        min_amplitude=0.0,                 # min_amplitude (float): Minimum amplitude after normalization.
-        max_amplitude=1.0,                 # max_amplitude (float): Maximum amplitude after normalization.
         sea_level=0.5,                     # sea_level (float): Threshold below which terrain is considered 'sea'.
         sky_level=1.0,                     # sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness=0.3,                 # sea_roughness (float): Random fluctuation intensity added near sea level.
@@ -359,8 +357,6 @@ def generate_terrain_noise(
         res (tuple): Base resolution (periods) of the Perlin noise grid.
         octaves (int): Number of fractal noise layers to combine.
         random_seed (int): Seed for NumPy random generator.
-        min_amplitude (float): Minimum amplitude after normalization.
-        max_amplitude (float): Maximum amplitude after normalization.
         sea_level (float): Threshold below which terrain is considered 'sea'.
         sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness (float): Random fluctuation intensity added near sea level.
@@ -371,6 +367,9 @@ def generate_terrain_noise(
     Returns:
         np.ndarray: The final filtered terrain heightmap (2D).
     """
+
+    min_amplitude = 0.0
+    max_amplitude = 1.0
 
     shape = (size, size)
     np.random.seed(random_seed)
@@ -504,8 +503,6 @@ if __name__ == '__main__':
     res = (8, 8)
     octaves = 8
 
-    min_amplitude = 0
-    max_amplitude = 1  # TODO: debug faulty terrain when min_amplitude, max_amplitude != 0, 1
     sea_level = 0.2
     sky_level = 1
     sea_roughness = 0.3
@@ -531,8 +528,6 @@ if __name__ == '__main__':
                                             res=res,
                                             octaves=octaves,
                                             random_seed=random_seed,
-                                            min_amplitude=min_amplitude,
-                                            max_amplitude=max_amplitude,
                                             sea_level=sea_level,
                                             sky_level=sky_level,
                                             sea_roughness=sea_roughness,
