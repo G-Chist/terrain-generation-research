@@ -44,10 +44,10 @@ License:
 This script includes components under the MIT License. See inline comments for license details.
 """
 
-
 import numpy as np
 import bpy
 import csv
+from typing import Tuple, List
 
 
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -334,6 +334,109 @@ def generate_fractal_noise_2d(
     return noise
 
 
+def dig_path(
+    matrix: np.ndarray,
+    kernel: np.ndarray,
+    start_cell: Tuple[int, int],
+    max_cells: int,
+    vert_thresh: float
+) -> np.ndarray:
+    """
+    Digs a path through a grid by applying a kernel to selected cells,
+    starting from `start_cell`, and proceeding to neighbors whose height
+    difference is within `vert_thresh`, using depth-first traversal.
+    Stops after digging into max_cells cells.
+
+    :param matrix: 2D numpy array representing heightmap or terrain
+    :param kernel: 2D numpy array (odd-dimensioned) used to modify height values
+    :param start_cell: (row, col) tuple of where to start digging
+    :param max_cells: maximum number of cells to convolve at
+    :param vert_thresh: Maximum allowed height difference to continue path
+    :return: Modified matrix (copy) with path dug
+    """
+    # Get dimensions of the terrain matrix
+    h, w = matrix.shape
+
+    # Make a copy of the input matrix to modify without altering the original
+    dug_matrix = matrix.copy()
+
+    # Keep track of which cells we've already dug into
+    visited = np.zeros_like(matrix, dtype=bool)
+
+    # Stack of cells to visit, initialized with the starting cell
+    frontier: List[Tuple[int, int]] = [start_cell]
+
+    # Size and center of the kernel
+    kh, kw = kernel.shape
+    k_center_h = kh // 2
+    k_center_w = kw // 2
+
+    # Counter to limit number of dug cells
+    dug_count = 0
+    dug_limit = max_cells
+
+    def get_valid_neighbors(cell: Tuple[int, int]) -> List[Tuple[int, int]]:
+        """
+        Returns unvisited neighbor cells within vertical threshold.
+        Includes 8-connected neighbors (N, S, E, W, NE, NW, SE, SW).
+        """
+        r, c = cell
+        neighbors = []
+
+        # 8 possible directions
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1),
+                      (-1, -1), (-1, 1), (1, -1), (1, 1)]
+
+        for dr, dc in directions:
+            nr, nc = r + dr, c + dc
+
+            # Ensure neighbor is within bounds and not visited
+            if 0 <= nr < h and 0 <= nc < w and not visited[nr, nc]:
+                # Only accept neighbors whose height difference is acceptable
+                if abs(dug_matrix[nr, nc] - dug_matrix[r, c]) <= vert_thresh:
+                    neighbors.append((nr, nc))
+
+        return neighbors
+
+    # Main blurring loop: continue while there are frontier cells and limit not reached
+    while frontier and dug_count < dug_limit:
+        # Depth-first: pop from end of list (stack behavior)
+        r, c = frontier.pop()
+        if visited[r, c]:
+            continue  # skip already visited cells
+
+        visited[r, c] = True
+        dug_count += 1
+
+        # --- Manual convolution: apply kernel over region centered at (r, c) ---
+        # Define bounds of region in matrix
+        r_start = max(0, r - k_center_h)
+        r_end = min(h, r + k_center_h + 1)
+        c_start = max(0, c - k_center_w)
+        c_end = min(w, c + k_center_w + 1)
+
+        # Compute bounds of the corresponding kernel sub-region
+        k_r_start = k_center_h - (r - r_start)
+        k_r_end = k_r_start + (r_end - r_start)
+        k_c_start = k_center_w - (c - c_start)
+        k_c_end = k_c_start + (c_end - c_start)
+
+        # Extract region and kernel segment
+        region = dug_matrix[r_start:r_end, c_start:c_end]
+        kernel_segment = kernel[k_r_start:k_r_end, k_c_start:k_c_end]
+
+        # Compute blurred region: convolution result
+        convolved_region = region * kernel_segment
+
+        # Update the matrix region with the blurred values
+        dug_matrix[r_start:r_end, c_start:c_end] = convolved_region
+
+        # Add valid neighbors to frontier (DFS order)
+        frontier.extend(get_valid_neighbors((r, c)))
+
+    return dug_matrix
+
+
 def generate_terrain_noise(
         size=1024,                         # size (int): Width and height of the terrain grid.
         res=(8, 8),                        # res (tuple): Base resolution (periods) of the Perlin noise grid.
@@ -361,7 +464,7 @@ def generate_terrain_noise(
         sky_level (float): Threshold above which terrain is flattened to sky level.
         sea_roughness (float): Random fluctuation intensity added near sea level.
         layers (int): Number of times to add the terrain to itself to create a layered terrain.
-        trend(np.ndarray): An optional trend to add to the surface.
+        trend (np.ndarray): An optional trend to add to the surface.
         kernels (np.ndarray): Optional sequence of convolution kernels to apply.
 
     Returns:
@@ -375,7 +478,7 @@ def generate_terrain_noise(
     np.random.seed(random_seed)
 
     # Generate fractal noise
-    noise = generate_fractal_noise_2d(shape=shape, res=res, octaves=octaves)
+    noise = generate_fractal_noise_2d(shape=shape, res=res, tileable=(True, True), octaves=octaves)
 
     # Normalize noise
     noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
@@ -509,9 +612,9 @@ if __name__ == '__main__':
 
     layers = 5
 
-    kernels = (box_blur_25x25)
+    kernels = (box_blur_7x7)
 
-    terrace = True
+    terrace = False
     terrace_steepness = 11
     terrace_frequency = 4
 
@@ -537,6 +640,13 @@ if __name__ == '__main__':
                                             terrace_steepness=terrace_steepness,
                                             terrace_frequency=terrace_frequency,
                                             kernels=kernels)
+
+    # DIG PATH
+    noise_filtered = dig_path(matrix=noise_filtered,
+                              kernel=box_blur_11x11,
+                              start_cell=(100, 100),
+                              max_cells=200,
+                              vert_thresh=0.2)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
