@@ -6,3 +6,6 @@
   - Multifractal Terrain Generation for Evaluating Autonomous Off-Road Ground Vehicles
 - https://inria.hal.science/inria-00402079/document
   - Fast Hydraulic Erosion Simulation and Visualization on GPU
+- https://arxiv.org/pdf/1610.03525
+  - Polynomial methods for fast Procedural Terrain Generation
+
