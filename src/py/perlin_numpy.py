@@ -426,7 +426,7 @@ def dig_path(
         kernel_segment = kernel[k_r_start:k_r_end, k_c_start:k_c_end]
 
         # Compute blurred region: convolution result
-        convolved_region = region * kernel_segment
+        convolved_region = apply_convolution(region, kernel)
 
         # Update the matrix region with the blurred values
         dug_matrix[r_start:r_end, c_start:c_end] = convolved_region
@@ -644,9 +644,9 @@ if __name__ == '__main__':
     # DIG PATH
     noise_filtered = dig_path(matrix=noise_filtered,
                               kernel=box_blur_11x11,
-                              start_cell=(100, 100),
+                              start_cell=(0, 0),
                               max_cells=200,
-                              vert_thresh=0.2)
+                              vert_thresh=0.005)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
