@@ -1,0 +1,1 @@
+This repository contains the code used to generate Perlin noise-based terrains.
