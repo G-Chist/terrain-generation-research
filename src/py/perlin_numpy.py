@@ -656,11 +656,13 @@ if __name__ == '__main__':
     terrain_collection.objects.link(perlin_terrain)
 
     # export vertices to CSV
+    """
     blend_path = bpy.path.abspath("//vertices.csv")
     with open(blend_path, "w", newline="") as file:
         writer = csv.writer(file)
         writer.writerow(["x", "y", "z"])
         writer.writerows(vertices)
+    """
 
     # VISUALIZE
     #"""
