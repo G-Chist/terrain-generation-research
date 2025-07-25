@@ -8,5 +8,10 @@
   - added terracing
     - terracing + blurring generates a traversable terrain given the right parameters
 ---
-- open_terrain_from_png_to_csv.py, load_csv_to_blender.py
+- open_terrain_from_png_to_csv.py + load_csv_to_blender.py
   - enables us to load a terrain from a .png height map into Blender and smoothen it with some convolutions
+---
+- symbolic_regression_grid.py
+  - applies symbolic regression to a Perlin noise sample
+    - not very productive for landscape generation
+    - could be used later to discover trends in terrains
