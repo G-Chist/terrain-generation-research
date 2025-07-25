@@ -656,16 +656,69 @@ if __name__ == '__main__':
     # SMOOTHEN TERRAIN AFTER DIGGING PATH
     noise_filtered = apply_convolution(matrix=noise_filtered, kernel=box_blur_7x7)
 
+    # Generate mesh data
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
 
-    # create mesh in Blender
+    # Create mesh and object
     perlin_mesh = bpy.data.meshes.new("perlin_mesh")
     perlin_mesh.from_pydata(vertices, [], faces)
+    perlin_mesh.update()
+
+    # Add vertex colors
+    color_layer = perlin_mesh.vertex_colors.new(name="Col")
+
+    # Normalize z values for color mapping
+    z_values = np.array([v[2] for v in vertices])
+    z_min, z_max = z_values.min(), z_values.max()
+
+
+    def height_to_color(z):
+        norm_z = (z - z_min) / (z_max - z_min)
+        if norm_z > 0.8:
+            return (1.0, 1.0, 1.0, 1.0)  # white
+        elif norm_z > 0.2:
+            return (0.5, 0.5, 0.5, 1.0)  # gray
+        else:
+            return (0.0, 0.6, 0.0, 1.0)  # green
+
+
+    # Assign colors to each face's loops
+    for poly in perlin_mesh.polygons:
+        for loop_idx in poly.loop_indices:
+            vert_idx = perlin_mesh.loops[loop_idx].vertex_index
+            z = vertices[vert_idx][2]
+            color_layer.data[loop_idx].color = height_to_color(z)
+
+    # Create object and collection
     perlin_terrain = bpy.data.objects.new("perlin_terrain", perlin_mesh)
     terrain_collection = bpy.data.collections.new("terrain_collection")
     bpy.context.scene.collection.children.link(terrain_collection)
     terrain_collection.objects.link(perlin_terrain)
+
+    # Assign material that uses vertex color
+    mat = bpy.data.materials.new(name="TerrainMaterial")
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+
+    # Clear default nodes
+    for node in nodes:
+        nodes.remove(node)
+
+    # Add new nodes
+    output_node = nodes.new(type='ShaderNodeOutputMaterial')
+    diffuse_node = nodes.new(type='ShaderNodeBsdfDiffuse')
+    vc_node = nodes.new(type='ShaderNodeVertexColor')
+    vc_node.layer_name = "Col"
+
+    # Connect nodes
+    links.new(vc_node.outputs['Color'], diffuse_node.inputs['Color'])
+    links.new(diffuse_node.outputs['BSDF'], output_node.inputs['Surface'])
+
+    # Assign material
+    perlin_mesh.materials.append(mat)
+    perlin_terrain.data.materials.append(mat)
 
     # export vertices to CSV
     """
