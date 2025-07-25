@@ -599,13 +599,13 @@ if __name__ == '__main__':
     res = (8, 8)
     octaves = 8
 
-    sea_level = 0.2
+    sea_level = 0.4
     sky_level = 1
     sea_roughness = 0.3
 
     layers = 5
 
-    kernels = (box_blur_7x7)
+    kernels = (box_blur_3x3)
 
     terrace = False
     terrace_steepness = 11
@@ -617,7 +617,7 @@ if __name__ == '__main__':
     x_trend = np.linspace(0, 10, size)
     y_trend = np.linspace(0, 10, size)
     X_trend, Y_trend = np.meshgrid(x_trend, y_trend)
-    trend = 3*np.sin(X_trend + 2*Y_trend) + 4*np.cos(1.7*X_trend + 0.5*Y_trend)
+    trend = 1*np.sin(X_trend + 2*Y_trend) + 1.45*np.cos(1.7*X_trend + 0.5*Y_trend)
 
     # GENERATION
     noise_filtered = generate_terrain_noise(size=size,
@@ -635,6 +635,7 @@ if __name__ == '__main__':
                                             kernels=kernels)
 
     # DIG PATHS
+    """
     noise_filtered = dig_path(matrix=noise_filtered,
                               kernel=box_blur_11x11,
                               start_cell=(0, 0),
@@ -652,9 +653,10 @@ if __name__ == '__main__':
                               start_cell=(570, 300),
                               max_cells=500,
                               vert_thresh=0.005)
+    """
 
     # SMOOTHEN TERRAIN AFTER DIGGING PATH
-    noise_filtered = apply_convolution(matrix=noise_filtered, kernel=box_blur_7x7)
+    # noise_filtered = apply_convolution(matrix=noise_filtered, kernel=box_blur_7x7)
 
     # Generate mesh data
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
@@ -673,14 +675,32 @@ if __name__ == '__main__':
     z_min, z_max = z_values.min(), z_values.max()
 
 
+    def lerp(a, b, t):
+        return tuple(a[i] + (b[i] - a[i]) * t for i in range(4))
+
     def height_to_color(z):
         norm_z = (z - z_min) / (z_max - z_min)
-        if norm_z > 0.8:
-            return (1.0, 1.0, 1.0, 1.0)  # white
-        elif norm_z > 0.2:
-            return (0.5, 0.5, 0.5, 1.0)  # gray
+
+        # Define key color points (RGBA)
+        white = (1.0, 1.0, 1.0, 1.0)
+        gray  = (0.6, 0.6, 0.6, 1.0)
+        green = (0.2, 0.6, 0.2, 1.0)
+        brown = (0.5, 0.37, 0.235, 1.0)
+
+        if norm_z >= 0.6:
+            # White to Gray
+            t = (norm_z - 0.6) / 0.2
+            return lerp(gray, white, t)
+        elif norm_z >= 0.3:
+            # Gray to Green
+            t = (norm_z - 0.3) / 0.2
+            return lerp(green, gray, t)
+        elif norm_z >= 0.0:
+            # Green to Brown
+            t = norm_z / 0.3
+            return lerp(brown, green, t)
         else:
-            return (0.0, 0.6, 0.0, 1.0)  # green
+            return brown  # fallback for any value below z_min
 
 
     # Assign colors to each face's loops
@@ -730,12 +750,12 @@ if __name__ == '__main__':
     """
 
     # VISUALIZE
-    #"""
+    """
     import matplotlib.pyplot as plt
     plt.imshow(noise_filtered, cmap='gray', interpolation='lanczos')
     plt.colorbar()
     plt.show()
-    #"""
+    """
 
 # -------------------------------------------------------------------
 # INSTRUCTIONS: How to view generated Perlin noise terrain in Blender
