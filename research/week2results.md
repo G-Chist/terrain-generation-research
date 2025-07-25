@@ -2,6 +2,8 @@
 
 - perlin_numpy.py
   - removed min/max height
+  - added coloring
+    - colors the Blender object with multiple gradients depending on height
   - added dig_path
     - a function that searches for a path using DFS and a height difference threshold and applies convolutions to draw paths
     - draws a natural-looking path if post-processing (blurring) is applied
