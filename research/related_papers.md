@@ -8,4 +8,5 @@
   - Fast Hydraulic Erosion Simulation and Visualization on GPU
 - https://arxiv.org/pdf/1610.03525
   - Polynomial methods for fast Procedural Terrain Generation
-
+- https://www.cs.york.ac.uk/rts/docs/GECCO_2005/Conference%20proceedings/docs/p1463.pdf
+  - Terrain generation using genetic algorithms
