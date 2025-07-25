@@ -153,7 +153,7 @@ x = np.linspace(0, 1, n_col)
 y = np.linspace(0, 1, n_row)
 X_grid, Y_grid = np.meshgrid(x, y)
 X = np.stack([X_grid.ravel(), Y_grid.ravel()], axis=1)  # shape: (n_row*n_col, 2)
-y_target = generate_perlin_noise_2d(shape=(n_row, n_col), res=(8, 8)).ravel()
+y_target = generate_perlin_noise_2d(shape=(n_row, n_col), res=(8, 8)).ravel()  # turn array into 1D
 
 # Fit symbolic regression model
 model = PySRRegressor(
