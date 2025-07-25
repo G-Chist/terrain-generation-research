@@ -392,8 +392,9 @@ def dig_path(
 
             # Ensure neighbor is within bounds and not visited
             if 0 <= nr < h and 0 <= nc < w and not visited[nr, nc]:
-                # Only accept neighbors whose height difference is acceptable
-                if abs(dug_matrix[nr, nc] - dug_matrix[r, c]) <= vert_thresh:
+                # Only accept neighbors within vertical threshold
+                vert_diff = abs(dug_matrix[nr, nc] - dug_matrix[r, c])
+                if vert_diff <= vert_thresh:
                     neighbors.append((nr, nc))
 
         return neighbors
@@ -633,16 +634,27 @@ if __name__ == '__main__':
                                             terrace_frequency=terrace_frequency,
                                             kernels=kernels)
 
-    # DIG PATH
+    # DIG PATHS
     noise_filtered = dig_path(matrix=noise_filtered,
                               kernel=box_blur_11x11,
                               start_cell=(0, 0),
-                              max_cells=400,
+                              max_cells=500,
+                              vert_thresh=0.005)
+
+    noise_filtered = dig_path(matrix=noise_filtered,
+                              kernel=box_blur_11x11,
+                              start_cell=(200, 100),
+                              max_cells=500,
+                              vert_thresh=0.005)
+
+    noise_filtered = dig_path(matrix=noise_filtered,
+                              kernel=box_blur_11x11,
+                              start_cell=(570, 300),
+                              max_cells=500,
                               vert_thresh=0.005)
 
     # SMOOTHEN TERRAIN AFTER DIGGING PATH
-    noise_filtered = apply_convolution(matrix=noise_filtered,
-                                       kernel=box_blur_7x7)
+    noise_filtered = apply_convolution(matrix=noise_filtered, kernel=box_blur_7x7)
 
     vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
