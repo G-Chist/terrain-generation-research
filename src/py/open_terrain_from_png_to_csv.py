@@ -1,3 +1,5 @@
+import csv
+
 import imageio.v3 as iio
 import numpy as np
 import bpy
@@ -73,6 +75,22 @@ kernel_smoother = np.array([
     [2, 4, 2],
     [1, 2, 1]
 ], dtype=np.float32)
+
+
+def write_vertices_to_csv(vertices, filepath):
+    """
+    Writes a list of (x, y, z) vertices to a CSV file.
+
+    Parameters:
+        vertices: List of tuples/lists like [(x1, y1, z1), (x2, y2, z2), ...]
+        filepath: Path to the output CSV file
+    """
+    with open(filepath, mode='w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for v in vertices:
+            if len(v) != 3:
+                raise ValueError(f"Invalid vertex (not 3 elements): {v}")
+            writer.writerow(v)
 
 
 def load_bw_image_as_normalized_array(filepath):
@@ -211,15 +229,8 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
 
 if __name__ == "__main__":
     terrain = load_bw_image_as_normalized_array("C:\\Users\\79140\\PycharmProjects\\procedural-terrain-generation-blender\\data\\terrain_example.png")
-    terrain = apply_convolution(matrix=terrain, kernel=box_blur_7x7)  # smoothen
+    terrain = apply_convolution(matrix=terrain, kernel=box_blur_11x11)  # smoothen
     vertices = grid_to_xyz(terrain, start_coordinate=-6, end_coordinate=6).tolist()
     size = terrain.shape[0]
-    faces = generate_faces_from_grid(size, size)
 
-    # create mesh in Blender
-    real_mesh = bpy.data.meshes.new("real_mesh")
-    real_mesh.from_pydata(vertices, [], faces)
-    real_terrain = bpy.data.objects.new("real_terrain", real_mesh)
-    terrain_collection = bpy.data.collections.new("terrain_collection")
-    bpy.context.scene.collection.children.link(terrain_collection)
-    terrain_collection.objects.link(real_terrain)
+    write_vertices_to_csv(vertices=vertices, filepath="C:\\Users\\79140\\PycharmProjects\\procedural-terrain-generation\\data\\real_vertices_" + str(size) + ".csv")
