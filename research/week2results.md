@@ -17,3 +17,7 @@
   - applies symbolic regression to a Perlin noise sample
     - not very productive for landscape generation
     - could be used later to discover trends in terrains
+---
+- other
+  - found a Unity plugin designed to generate a realistic terrain using a GAN
+    - https://apseren.com/mlterraform/
