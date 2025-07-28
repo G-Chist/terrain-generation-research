@@ -16,3 +16,5 @@
   - Controlled Procedural Terrain Generation Using Software Agents
 - https://www.researchgate.net/publication/239037074_A_Multivariate_Weierstrass-Mandelbrot_Function
   - A multivariate weierstrass–mandelbrot function
+- https://www.academia.edu/84221963/Fractal_terrain_generation_for_vehicle_simulation
+  - Fractal terrain generation for vehicle simulation
