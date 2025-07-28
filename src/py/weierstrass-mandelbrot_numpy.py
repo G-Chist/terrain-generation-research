@@ -53,8 +53,8 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     # Create meshgrid
-    x_vals = np.linspace(-50, 50, 200)
-    y_vals = np.linspace(-50, 50, 200)
+    x_vals = np.linspace(-50, 50, 500)
+    y_vals = np.linspace(-50, 50, 500)
     x, y = np.meshgrid(x_vals, y_vals)
 
     # Parameters
@@ -74,4 +74,8 @@ if __name__ == '__main__':
     ax.plot_surface(x, y, z, cmap='viridis', linewidth=0)
     ax.set_aspect('equal', adjustable='box')
     ax.set_title('3D Weierstrass-Mandelbrot Surface')
+    plt.show()
+
+    plt.imshow(z, cmap='gray', interpolation='lanczos')  # height map
+    plt.colorbar()
     plt.show()
