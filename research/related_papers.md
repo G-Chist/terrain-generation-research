@@ -14,3 +14,5 @@
   - PTRM: Perceived Terrain Realism Metric
 - https://ianparberry.com/pubs/terrain.pdf
   - Controlled Procedural Terrain Generation Using Software Agents
+- https://www.researchgate.net/publication/239037074_A_Multivariate_Weierstrass-Mandelbrot_Function
+  - A multivariate weierstrass–mandelbrot function
