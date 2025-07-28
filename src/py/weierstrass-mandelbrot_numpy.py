@@ -53,8 +53,8 @@ if __name__ == '__main__':  # example
     import matplotlib.pyplot as plt
 
     # Create meshgrid
-    x_vals = np.linspace(-50, 50, 500)
-    y_vals = np.linspace(-50, 50, 500)
+    x_vals = np.linspace(0, 1024, 1000)
+    y_vals = np.linspace(0, 1024, 1000)
     x, y = np.meshgrid(x_vals, y_vals)
 
     # Parameters
