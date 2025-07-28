@@ -4,6 +4,54 @@ from pysr import PySRRegressor
 from sympy import python
 
 
+def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
+    """
+        Apply a 2D convolution operation to a matrix using a given square kernel.
+
+        This function performs manual convolution of the input matrix with the specified
+        kernel, while preserving the original matrix dimensions. It pads the input using
+        edge padding to ensure that border elements are convolved correctly.
+
+        Parameters:
+            matrix (np.ndarray): A 2D NumPy array (heightmap or image) to be filtered.
+            kernel (np.ndarray, optional): A square 2D NumPy array with odd dimensions
+                representing the convolution kernel. Defaults to a 3x3 uniform blur kernel.
+
+        Returns:
+            np.ndarray: A 2D NumPy array of the same shape as `matrix`, containing the
+            result of the convolution operation.
+
+        Raises:
+            AssertionError: If the kernel is not square or its dimensions are not odd.
+
+        Example:
+            >>> matrix = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]], dtype=np.float32)
+            >>> kernel = np.array([[1, 2, 1], [2, 4, 2], [1, 2, 1]], dtype=np.float32)
+            >>> result = apply_convolution(matrix, kernel)
+    """
+
+    # Ensure kernel is square and has odd dimensions
+    assert kernel.ndim == 2 and kernel.shape[0] == kernel.shape[1], "Kernel must be square"
+    assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
+
+    kernel = kernel.astype(np.float32)
+    kernel /= kernel.sum() if kernel.sum() != 0 else 1  # normalize if not edge detector
+
+    k = kernel.shape[0] // 2  # padding size
+
+    # Pad the matrix to preserve dimensions after convolution
+    padded = np.pad(matrix, pad_width=k, mode='edge')
+    output = np.zeros_like(matrix)
+
+    # Perform manual convolution
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            region = padded[i:i + 2 * k + 1, j:j + 2 * k + 1]
+            output[i, j] = np.sum(region * kernel)
+
+    return output
+
+
 def interpolant(t):
     return t * t * t * (t * (t * 6 - 15) + 10)
 
@@ -144,16 +192,32 @@ def generate_fractal_noise_2d(
         amplitude *= persistence
     return noise
 
+
+# Kernels to blur noise
+box_blur_3x3 = np.ones((3, 3), dtype=np.float32)
+box_blur_3x3 /= box_blur_3x3.sum()
+
+box_blur_7x7 = np.ones((7, 7), dtype=np.float32)
+box_blur_7x7 /= box_blur_7x7.sum()
+
+box_blur_11x11 = np.ones((11, 11), dtype=np.float32)
+box_blur_11x11 /= box_blur_11x11.sum()
+
+box_blur_25x25 = np.ones((25, 25), dtype=np.float32)
+box_blur_25x25 /= box_blur_25x25.sum()
+
 # Generate 2D input data from noise
 np.random.seed(123)
-size = n_row = n_col = 16
-
-# Reshape inputs for symbolic regression
+size = n_row = n_col = 32
 x = np.linspace(0, 1, n_col)
 y = np.linspace(0, 1, n_row)
 X_grid, Y_grid = np.meshgrid(x, y)
+y_target = generate_perlin_noise_2d(shape=(n_row, n_col), res=(8, 8))
+y_target = apply_convolution(matrix=y_target, kernel=box_blur_25x25)
+
+# Reshape inputs for symbolic regression
 X = np.stack([X_grid.ravel(), Y_grid.ravel()], axis=1)  # shape: (n_row*n_col, 2)
-y_target = generate_perlin_noise_2d(shape=(n_row, n_col), res=(8, 8)).ravel()  # turn array into 1D
+y_target = y_target.ravel()  # turn array into 1D
 
 # Fit symbolic regression model
 model = PySRRegressor(
