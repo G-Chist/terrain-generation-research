@@ -599,9 +599,9 @@ if __name__ == '__main__':
     res = (8, 8)
     octaves = 8
 
-    sea_level = 0.4
+    sea_level = 0.45
     sky_level = 1
-    sea_roughness = 0.3
+    sea_roughness = 0.5
 
     layers = 5
 
@@ -682,25 +682,25 @@ if __name__ == '__main__':
         norm_z = (z - z_min) / (z_max - z_min)
 
         # Define key color points (RGBA)
-        white = (1.0, 1.0, 1.0, 1.0)
-        gray  = (0.6, 0.6, 0.6, 1.0)
-        green = (0.2, 0.6, 0.2, 1.0)
+        white = (0.9, 0.9, 0.9, 1.0)
+        gray  = (0.3, 0.3, 0.3, 1.0)
+        green = (0.196, 0.231, 0.011, 1.0)
         brown = (0.5, 0.37, 0.235, 1.0)
 
-        if norm_z >= 0.6:
+        if norm_z >= 0.4:
             # White to Gray
-            t = (norm_z - 0.6) / 0.2
+            t = (norm_z - 0.4) / 0.6
             return lerp(gray, white, t)
-        elif norm_z >= 0.3:
-            # Gray to Green
-            t = (norm_z - 0.3) / 0.2
-            return lerp(green, gray, t)
+        elif norm_z >= 0.1:
+            # Gray to Brown
+            t = (norm_z - 0.1) / 0.3
+            return lerp(brown, gray, t)
         elif norm_z >= 0.0:
-            # Green to Brown
-            t = norm_z / 0.3
-            return lerp(brown, green, t)
+            # Brown to Green
+            t = norm_z / 0.1
+            return lerp(green, brown, t)
         else:
-            return brown  # fallback for any value below z_min
+            return green  # fallback for any value below z_min
 
 
     # Assign colors to each face's loops
