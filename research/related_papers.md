@@ -12,3 +12,5 @@
   - Terrain generation using genetic algorithms
 - https://dl.acm.org/doi/10.1145/3514244
   - PTRM: Perceived Terrain Realism Metric
+- https://ianparberry.com/pubs/terrain.pdf
+  - Controlled Procedural Terrain Generation Using Software Agents
