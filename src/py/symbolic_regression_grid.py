@@ -221,7 +221,7 @@ y_target = y_target.ravel()  # turn array into 1D
 
 # Fit symbolic regression model
 model = PySRRegressor(
-    niterations=250,
+    niterations=300,
     binary_operators=["+", "-", "*", "/"],
     unary_operators=["cos", "sin", "exp", "sqrt", "log", "abs"],
     model_selection="best",
