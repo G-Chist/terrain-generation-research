@@ -49,7 +49,7 @@ def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
     return z
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # example
     import matplotlib.pyplot as plt
 
     # Create meshgrid
