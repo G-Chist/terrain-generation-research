@@ -10,3 +10,5 @@
   - Polynomial methods for fast Procedural Terrain Generation
 - https://www.cs.york.ac.uk/rts/docs/GECCO_2005/Conference%20proceedings/docs/p1463.pdf
   - Terrain generation using genetic algorithms
+- https://dl.acm.org/doi/10.1145/3514244
+  - PTRM: Perceived Terrain Realism Metric
