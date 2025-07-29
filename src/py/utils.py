@@ -578,33 +578,33 @@ def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
 
 # DIFFERENT USEFUL KERNEL EXAMPLES
 emboss = np.array([
-[-2, -1, 0],
-[-1, 1, 1],
-[0, 1, 2]
+    [-2, -1, 0],
+    [-1, 1, 1],
+    [0, 1, 2]
 ], dtype=np.float32)
 
 sharpen = np.array([
-[0, -1, 0],
-[-1, 5, -1],
-[0, -1, 0]
+    [0, -1, 0],
+    [-1, 5, -1],
+    [0, -1, 0]
 ], dtype=np.float32)
 
 laplacian = np.array([
-[0, -1, 0],
-[-1, 4, -1],
-[0, -1, 0]
+    [0, -1, 0],
+    [-1, 4, -1],
+    [0, -1, 0]
 ], dtype=np.float32)
 
 sobel_x = np.array([
-[-1, 0, 1],
-[-2, 0, 2],
-[-1, 0, 1]
+    [-1, 0, 1],
+    [-2, 0, 2],
+    [-1, 0, 1]
 ], dtype=np.float32)
 
 sobel_y = np.array([
-[-1, -2, -1],
-[0, 0, 0],
-[1, 2, 1]
+    [-1, -2, -1],
+    [0, 0, 0],
+    [1, 2, 1]
 ], dtype=np.float32)
 
 box_blur_3x3 = np.ones((3, 3), dtype=np.float32)
@@ -620,29 +620,29 @@ box_blur_25x25 = np.ones((25, 25), dtype=np.float32)
 box_blur_25x25 /= box_blur_25x25.sum()
 
 gaussian_kernel_3x3 = np.array([
-[1, 2, 1],
-[2, 4, 2],
-[1, 2, 1]
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
 ], dtype=np.float32)
 gaussian_kernel_3x3 /= gaussian_kernel_3x3.sum()
 
 gaussian_kernel_5x5 = np.array([
-[1, 4, 6, 4, 1],
-[4, 16, 24, 16, 4],
-[6, 24, 36, 24, 6],
-[4, 16, 24, 16, 4],
-[1, 4, 6, 4, 1]
+    [1, 4, 6, 4, 1],
+    [4, 16, 24, 16, 4],
+    [6, 24, 36, 24, 6],
+    [4, 16, 24, 16, 4],
+    [1, 4, 6, 4, 1]
 ], dtype=np.float32)
 gaussian_kernel_5x5 /= gaussian_kernel_5x5.sum()
 
 kernel_ripple = np.array([
-[0, -1, 0],
-[-1, 5, -1],
-[0, -1, 0]
+    [0, -1, 0],
+    [-1, 5, -1],
+    [0, -1, 0]
 ], dtype=np.float32)
 
 kernel_smoother = np.array([
-[1, 2, 1],
-[2, 4, 2],
-[1, 2, 1]
+    [1, 2, 1],
+    [2, 4, 2],
+    [1, 2, 1]
 ], dtype=np.float32)
