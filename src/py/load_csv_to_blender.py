@@ -1,3 +1,56 @@
+"""
+PLEASE READ THIS COMMENT BEFORE USING THE CODE!
+
+------------------------------------------------------
+Terrain Loader for Blender - Digital Elevation Importer
+------------------------------------------------------
+
+This script imports a terrain mesh into Blender from a .csv file containing a list
+of vertices (x, y, z). Each row of the CSV file represents a single 3D point on a
+digital elevation map (DEM). Using these vertices, the script automatically
+generates triangular faces to construct the full terrain mesh.
+
+Key Components:
+---------------
+1. Vertex Loader:
+   - Reads a .csv file with at least three comma-separated values per row (x, y, z).
+   - Skips invalid or non-numeric rows automatically.
+
+2. Face Generator:
+   - Assumes the vertices are structured as a grid in row-major order (C-style).
+   - Creates two triangular faces for each quad cell in the grid.
+   - Supports arbitrary grid dimensions (e.g., 128x128, 512x512).
+
+3. Mesh Builder:
+   - Uses Blender's Python API (`bpy`) to create a new mesh and object.
+   - Adds the object to a new "terrain_collection" in the active Blender scene.
+
+Modules Used:
+-------------
+- `numpy` for efficient grid and index calculations.
+- `bpy` for creating and linking Blender meshes and objects.
+- `csv` for reading the input vertex data.
+- `os` for file validation.
+
+Usage Instructions:
+-------------------
+1. Ensure the input CSV file is structured with x, y, z columns for each vertex.
+   Example row: `-6.0, 3.5, 0.12`
+2. Update the `csv_path` variable in the `__main__` section to the correct file path.
+3. Run the script inside Blender's Scripting workspace:
+   - Open Blender.
+   - Go to the Scripting tab.
+   - Load this script.
+   - Click Run Script.
+4. The resulting mesh will appear in the scene in a collection called
+   `terrain_collection` under the name `real_terrain`.
+
+Author:
+-------
+Matvei Shestopalov
+"""
+
+
 import numpy as np
 import bpy
 import os
