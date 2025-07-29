@@ -27,10 +27,15 @@ Modules Used:
 - `numpy`: Matrix operations and numerical tools.
 - `bpy`: Blender's Python API for creating objects and meshes.
 - `csv`: Exporting vertex coordinates to CSV.
+- `typing`: Function input/output specifications.
 
 Usage Instructions:
 -------------------
-Run the script inside Blender's Scripting workspace.
+Run the script inside Blender's Scripting workspace:
+   - Open Blender.
+   - Go to the Scripting tab.
+   - Load this script.
+   - Click Run Script.
 
 Author:
 -------
