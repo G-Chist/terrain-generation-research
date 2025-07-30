@@ -6,3 +6,7 @@
 ---
 - utils.py
   - abstracts out the functions used in non-standalone files
+---
+- weierstrass-mandelbrot_numpy.py
+  - implements the Weierstrass-Mandelbrot function using NumPy
+    - fast
