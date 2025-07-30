@@ -28,10 +28,12 @@ Modules Used:
 - `bpy`: Blender's Python API for creating objects and meshes.
 - `csv`: Exporting vertex coordinates to CSV.
 - `typing`: Function input/output specifications.
+- `mathutils`: Vector operations used for texturing.
 
 Usage Instructions:
 -------------------
-Run the script inside Blender's Scripting workspace:
+- Update the image path to set a desired texture (see img_path under # TEXTURING)
+- Run the script inside Blender's Scripting workspace:
    - Open Blender.
    - Go to the Scripting tab.
    - Load this script.
@@ -51,6 +53,8 @@ import numpy as np
 import bpy
 import csv
 from typing import Tuple, List
+from mathutils import Vector
+
 
 
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -742,6 +746,65 @@ if __name__ == '__main__':
     # Assign material
     perlin_mesh.materials.append(mat)
     perlin_terrain.data.materials.append(mat)
+
+    # TEXTURING
+    # UVs: top‑down planar mapping (X,Y -> U,V) normalized to 0..1
+
+    xs = np.array([v[0] for v in vertices])
+    ys = np.array([v[1] for v in vertices])
+    min_x, max_x = float(xs.min()), float(xs.max())
+    min_y, max_y = float(ys.min()), float(ys.max())
+    range_x = max(max_x - min_x, 1e-8)
+    range_y = max(max_y - min_y, 1e-8)
+
+    # Add a UV layer on the mesh
+    uv_layer = perlin_mesh.uv_layers.new(name="UVMap")
+
+    # Write UVs per face-vertex (loop)
+    for poly in perlin_mesh.polygons:
+        for loop_idx in poly.loop_indices:
+            vi = perlin_mesh.loops[loop_idx].vertex_index
+            vx, vy, _ = vertices[vi]
+            u = (vx - min_x) / range_x
+            v = (vy - min_y) / range_y
+            uv_layer.data[loop_idx].uv = (u, v)
+
+    # Material using a local JPG
+
+    # Create a new material (or reuse your existing one if you prefer)
+    tex_mat = bpy.data.materials.new(name="TerrainTextureMat")
+    tex_mat.use_nodes = True
+    nodes = tex_mat.node_tree.nodes
+    links = tex_mat.node_tree.links
+    nodes.clear()
+
+    # Nodes
+    out = nodes.new("ShaderNodeOutputMaterial")
+    bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+
+    img = nodes.new("ShaderNodeTexImage")
+    img.interpolation = 'Smart'  # or 'Linear' / 'Closest'
+    img.extension = 'REPEAT'  # use 'CLIP' to avoid tiling
+
+    img_path = bpy.path.abspath(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\stone_texture_granite.jpg")
+    img.image = bpy.data.images.load(img_path)
+
+    texcoord = nodes.new("ShaderNodeTexCoord")
+    mapping = nodes.new("ShaderNodeMapping")
+    # Tiling: increase Scale to tile more times across the terrain
+    mapping.inputs["Scale"].default_value[0] = 4.0  # U scale (tiling)
+    mapping.inputs["Scale"].default_value[1] = 4.0  # V scale (tiling)
+    mapping.inputs["Scale"].default_value[2] = 1.0
+
+    # Wire UVs -> Mapping -> Image -> BSDF -> Output
+    links.new(texcoord.outputs["UV"], mapping.inputs["Vector"])
+    links.new(mapping.outputs["Vector"], img.inputs["Vector"])
+    links.new(img.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+    # Assign material to the terrain object, replacing the previous one
+    perlin_terrain.data.materials.clear()
+    perlin_terrain.data.materials.append(tex_mat)
 
     # export vertices to CSV
     """
