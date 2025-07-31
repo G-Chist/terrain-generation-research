@@ -609,7 +609,38 @@ def feature_map(elevation_array):
         cell contains an integer from 0 to 9 representing a classified terrain
         feature (see `classify_patch` for encoding).
     """
-    return generic_filter(elevation_array, classify_patch, size=3, mode='nearest')
+    return generic_filter(elevation_array, classify_patch, size=3, mode='nearest').astype(np.uint8)
+
+
+def count_features(feature_map):
+    """
+    Count the number of terrain features in a feature map.
+
+    Parameters:
+    -----------
+    feature_map : ndarray
+        A 2D NumPy array representing the features of a DEM
+
+    Returns:
+    --------
+    dict
+        A dictionary mapping terrain feature names to their counts.
+    """
+    counts = np.bincount(feature_map.ravel(), minlength=10).tolist()
+    labels = [
+        "flat",       # 0
+        "peak",       # 1
+        "ridge",      # 2
+        "shoulder",   # 3
+        "spur",       # 4
+        "slope",      # 5
+        "pit",        # 6
+        "valley",     # 7
+        "footslope",  # 8
+        "hollow"      # 9
+    ]
+    
+    return dict(zip(labels, counts))
 
 
 def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
@@ -750,6 +781,10 @@ if __name__ == "__main__":  # testing
         r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\erosion_generated_terrain.png"
     )
     eroded_terrain_features = feature_map(eroded_terrain)
+
+    print(f"Feature counts for Perlin Noise:   {count_features(noise_features)}")
+    print(f"Feature counts for Eroded Terrain: {count_features(eroded_terrain_features)}")
+    print(f"Feature counts for Real Terrain:   {count_features(real_terrain_features)}")
 
     # Set up a 3x2 subplot
     fig, axs = plt.subplots(3, 2, figsize=(12, 10))
