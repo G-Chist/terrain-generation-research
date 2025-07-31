@@ -3,6 +3,7 @@ import csv
 from typing import List, Tuple
 import os
 import imageio.v3 as iio
+from scipy.ndimage import generic_filter
 
 
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -528,6 +529,89 @@ def load_bw_image_as_normalized_array(filepath):
     return arr_normalized
 
 
+def classify_patch(patch):
+    """
+    Classify a 3x3 elevation patch into a terrain feature type.
+
+    This function implements a rule-based classification system to identify one
+    of ten landform patterns (flat, peak, ridge, shoulder, spur, slope, pit,
+    valley, footslope, hollow) based on the relative elevation of the center
+    cell compared to its 8 neighbors.
+
+    Parameters:
+    -----------
+    patch : ndarray
+    A flattened 3x3 NumPy array (length 9) representing the local elevation
+    window. The center element is at index 4.
+
+    Returns:
+    --------
+    int
+    An integer between 0 and 9 encoding the classified terrain feature:
+
+        - 0 : flat
+        - 1 : peak
+        - 2 : ridge
+        - 3 : shoulder
+        - 4 : spur
+        - 5 : slope
+        - 6 : pit
+        - 7 : valley
+        - 8 : footslope
+        - 9 : hollow
+    """
+    center = patch[4]
+    neighbors = np.delete(patch, 4)  # remove center
+    diffs = neighbors - center
+
+    if np.all(diffs == 0):
+        return 0  # flat
+    elif np.all(diffs < 0):
+        return 1  # peak
+    elif np.all(diffs > 0):
+        return 6  # pit
+    elif np.count_nonzero(diffs == 0) >= 6:
+        return 5  # slope (simple approx: mostly uniform gradient)
+    elif np.count_nonzero(diffs > 0) >= 6:
+        return 7  # valley
+    elif np.count_nonzero(diffs < 0) >= 6:
+        return 2  # ridge
+    elif np.count_nonzero((diffs > 0) & (np.abs(diffs) > 0.1)) >= 4:
+        return 9  # hollow (low near high)
+    elif np.count_nonzero((diffs < 0) & (np.abs(diffs) > 0.1)) >= 4:
+        return 4  # spur (high near low)
+    elif (np.count_nonzero(diffs < 0) >= 3 and
+          np.count_nonzero(diffs > 0) >= 3):
+        return 3  # shoulder (center higher but mixed context)
+    else:
+        return 8  # footslope (mixed but flatter than shoulder)
+
+
+def feature_map(elevation_array):
+    """
+    Generate a terrain feature map from a 2D elevation array.
+
+    Applies the `classify_patch` function to each 3x3 neighborhood of the input
+    elevation array using a sliding window approach. Each cell in the output
+    array represents the terrain classification of the corresponding input
+    cell.
+
+    Parameters:
+    -----------
+    elevation_array : ndarray
+        A 2D NumPy array representing elevation values (e.g., a digital
+        elevation model, DEM).
+
+    Returns:
+    --------
+    ndarray
+        A 2D NumPy array of the same shape as `elevation_array`, where each
+        cell contains an integer from 0 to 9 representing a classified terrain
+        feature (see `classify_patch` for encoding).
+    """
+    return generic_filter(elevation_array, classify_patch, size=3, mode='nearest')
+
+
 def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
     """
     Compute the 3D Weierstrass-Mandelbrot function z(x, y).
@@ -646,3 +730,17 @@ kernel_smoother = np.array([
     [2, 4, 2],
     [1, 2, 1]
 ], dtype=np.float32)
+
+
+if __name__ == "__main__":  # testing
+    noise = generate_perlin_noise_2d(shape=(512, 512), res=(8, 8))
+    import matplotlib.pyplot as plt
+
+    plt.imshow(noise, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
+
+    noise_features = feature_map(noise)
+    plt.imshow(noise_features, cmap='gray', interpolation='lanczos')
+    plt.colorbar()
+    plt.show()
