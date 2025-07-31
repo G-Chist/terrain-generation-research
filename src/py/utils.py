@@ -733,14 +733,59 @@ kernel_smoother = np.array([
 
 
 if __name__ == "__main__":  # testing
-    noise = generate_perlin_noise_2d(shape=(512, 512), res=(8, 8))
     import matplotlib.pyplot as plt
 
-    plt.imshow(noise, cmap='gray', interpolation='lanczos')
-    plt.colorbar()
+    # Generate and display Perlin noise
+    noise = generate_perlin_noise_2d(shape=(512, 512), res=(8, 8))
+    noise_features = feature_map(noise)
+
+    # Load and process real terrain
+    real_terrain = load_bw_image_as_normalized_array(
+        r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_example.png"
+    )
+    real_terrain_features = feature_map(real_terrain)
+
+    # Load and process eroded terrain
+    eroded_terrain = load_bw_image_as_normalized_array(
+        r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\erosion_generated_terrain.png"
+    )
+    eroded_terrain_features = feature_map(eroded_terrain)
+
+    # Set up a 3x2 subplot
+    fig, axs = plt.subplots(3, 2, figsize=(12, 10))
+
+    axs[0, 0].imshow(noise, cmap='gray', interpolation='lanczos')
+    axs[0, 0].set_title("Perlin Noise")
+    axs[0, 0].axis('off')
+    fig.colorbar(axs[0, 0].images[0], ax=axs[0, 0])
+
+    axs[0, 1].imshow(noise_features, cmap='gray', interpolation='lanczos')
+    axs[0, 1].set_title("Perlin Noise Feature Map")
+    axs[0, 1].axis('off')
+    fig.colorbar(axs[0, 1].images[0], ax=axs[0, 1])
+
+    axs[1, 0].imshow(real_terrain, cmap='gray', interpolation='lanczos')
+    axs[1, 0].set_title("Real Terrain")
+    axs[1, 0].axis('off')
+    fig.colorbar(axs[1, 0].images[0], ax=axs[1, 0])
+
+    axs[1, 1].imshow(real_terrain_features, cmap='gray', interpolation='lanczos')
+    axs[1, 1].set_title("Real Terrain Feature Map")
+    axs[1, 1].axis('off')
+    fig.colorbar(axs[1, 1].images[0], ax=axs[1, 1])
+
+    axs[2, 0].imshow(eroded_terrain, cmap='gray', interpolation='lanczos')
+    axs[2, 0].set_title("Erosion-Generated Terrain")
+    axs[2, 0].axis('off')
+    fig.colorbar(axs[2, 0].images[0], ax=axs[2, 0])
+
+    axs[2, 1].imshow(eroded_terrain_features, cmap='gray', interpolation='lanczos')
+    axs[2, 1].set_title("Erosion-Generated Terrain Feature Map")
+    axs[2, 1].axis('off')
+    fig.colorbar(axs[2, 1].images[0], ax=axs[2, 1])
+
+    plt.tight_layout()
     plt.show()
 
-    noise_features = feature_map(noise)
-    plt.imshow(noise_features, cmap='gray', interpolation='lanczos')
-    plt.colorbar()
-    plt.show()
+
+
