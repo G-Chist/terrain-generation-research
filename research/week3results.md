@@ -10,6 +10,12 @@
 ---
 - utils.py
   - abstracts out the functions used in non-standalone files
+  - added functions to generate feature maps of terrains and count features
+    - can be useful to determine if a terrain is real or not
+    - examples:
+      - Feature counts for Perlin Noise:   {'flat': 0, 'peak': 38, 'ridge': 288, 'shoulder': 260206, 'spur': 0, 'slope': 0, 'pit': 47, 'valley': 506, 'footslope': 1059, 'hollow': 0}
+      - Feature counts for Eroded Terrain: {'flat': 156, 'peak': 1564, 'ridge': 16053, 'shoulder': 178269, 'spur': 0, 'slope': 704, 'pit': 1432, 'valley': 11066, 'footslope': 52900, 'hollow': 0}
+      - Feature counts for Real Terrain:   {'flat': 0, 'peak': 12314, 'ridge': 54662, 'shoulder': 124893, 'spur': 263, 'slope': 1, 'pit': 8781, 'valley': 59694, 'footslope': 1381, 'hollow': 155}
 ---
 - weierstrass-mandelbrot_numpy.py
   - implements the Weierstrass-Mandelbrot function using NumPy
