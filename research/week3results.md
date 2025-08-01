@@ -28,6 +28,7 @@
 ---
 - fit_tree_to_csv_dataset.py
   - fits a regression tree to the terrain feature dataset
+  - ideally, the dataset should be expanded to include non-fractal Perlin noise and Weierstrass-Mandelbrot fractal noise
   - see regression_tree_terrain_realness.png
     - results: depth of 5, 0.0 error!
       - a terrain is real if "footslope" proportion <= 0.188
