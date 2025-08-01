@@ -4,6 +4,7 @@ from typing import List, Tuple
 import os
 import imageio.v3 as iio
 from scipy.ndimage import generic_filter
+from PIL import Image
 
 
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -704,6 +705,40 @@ def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
 
     z *= A
     return z
+
+
+def save_array_as_grayscale_png(array: np.ndarray, filepath: str) -> None:
+    """
+    Save a 2D NumPy array as a grayscale PNG image by linearly scaling its values
+    to the [0, 255] range based on the array's own min and max.
+
+    Parameters:
+    -----------
+    array : np.ndarray
+        A 2D NumPy array of float values. The values are scaled based on the min
+        and max of the array, so they do not need to be in [0, 1].
+
+    filepath : str
+        Path where the PNG image will be saved (should end in .png).
+
+    Notes:
+    ------
+    This behaves as the inverse of a loader that normalizes an image by
+    (value - min) / (max - min).
+    """
+    if array.ndim != 2:
+        raise ValueError("Input array must be 2D")
+
+    min_val = array.min()
+    max_val = array.max()
+
+    if max_val - min_val == 0:
+        scaled = np.zeros_like(array, dtype=np.uint8)
+    else:
+        scaled = ((array - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+
+    image = Image.fromarray(scaled, mode='L')
+    image.save(filepath)
 
 
 # DIFFERENT USEFUL KERNEL EXAMPLES
