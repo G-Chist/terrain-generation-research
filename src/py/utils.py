@@ -476,6 +476,12 @@ def generate_terrain_noise(
 
 
 def load_vertices_from_csv(filepath):
+    """
+    Reads the list of (x,y,z) vertices from a CSV file.
+
+    Parameters:
+        filepath: Path to the CSV file
+    """
     if not os.path.isfile(filepath):
         raise ValueError(f"Path is not a file: {filepath}")
 
@@ -511,6 +517,15 @@ def write_vertices_to_csv(vertices, filepath):
 
 
 def load_bw_image_as_normalized_array(filepath):
+    """
+    Loads a .png image into a NumPy grid.
+
+    Args:
+        filepath: the path to a .png file.
+
+    Returns:
+        a NumPy grid representing grayscale values in the image.
+    """
     if not os.path.isfile(filepath):
         raise ValueError(f"Path is not a file: {filepath}")
 
