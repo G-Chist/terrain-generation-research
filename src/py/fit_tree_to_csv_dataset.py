@@ -11,8 +11,8 @@ df = pd.read_csv(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\
 X = df.drop("realness", axis=1)
 y = df["realness"]
 
-# Train-test split (80% train, 20% test)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=421)
+# Train-test split (70% train, 30% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=421)
 
 # Fit regression tree
 model = DecisionTreeRegressor(max_depth=5, random_state=421)
