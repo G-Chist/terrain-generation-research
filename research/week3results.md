@@ -21,5 +21,16 @@
   - implements the Weierstrass-Mandelbrot function using NumPy
     - fast
 ---
+- create_csv_feature_dataset.py
+  - loads terrain features (slope, pit, peak, ridge, etc.) into a dataset
+  - realness = 1.0 for real terrains, 0.5 for erosion-generated, 0.1 for Perlin noise-generated
+  - 300 entries for each category
+---
+- fit_tree_to_csv_dataset.py
+  - fits a regression tree to the terrain feature dataset
+    - results: depth of 5, 0.0 error!
+      - a terrain is real if "footslope" <= 0.188
+        - A footslope is a terrain feature identified when a 3x3 elevation patch has a mixed pattern of higher and lower neighbors around the center cell, but the differences are not strong or consistent enough to qualify as a shoulder, spur, ridge, or valley. It typically represents a transitional or gentle slope area, commonly found at the base of steeper terrain
+---
 - other
   - compiled a dataset of 300 Perlin noise-generated and 300 erosion-generated terrains
