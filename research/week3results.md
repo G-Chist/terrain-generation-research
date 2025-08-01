@@ -20,3 +20,6 @@
 - weierstrass-mandelbrot_numpy.py
   - implements the Weierstrass-Mandelbrot function using NumPy
     - fast
+---
+- other
+  - compiled a dataset of 300 Perlin noise-generated and 300 erosion-generated terrains
