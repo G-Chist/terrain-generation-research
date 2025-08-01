@@ -797,12 +797,30 @@ if __name__ == "__main__":  # testing
     )
     eroded_terrain_features = feature_map(eroded_terrain)
 
-    print(f"Feature counts for Perlin Noise:   {count_features(noise_features)}")
-    print(f"Feature counts for Eroded Terrain: {count_features(eroded_terrain_features)}")
-    print(f"Feature counts for Real Terrain:   {count_features(real_terrain_features)}")
+    # Generate and process Weierstrass–Mandelbrot terrain
+    # Create meshgrid
+    x_vals = np.linspace(0, 1024, 1000)
+    y_vals = np.linspace(0, 1024, 1000)
+    x, y = np.meshgrid(x_vals, y_vals)
 
-    # Set up a 3x2 subplot
-    fig, axs = plt.subplots(3, 2, figsize=(12, 10))
+    # Parameters
+    D = 2.5
+    G = 1e-1
+    L = 100.0
+    gamma = 1.5
+    M = 10
+    n_max = 20
+
+    wm_noise = weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max)
+    wm_features = feature_map(wm_noise)
+
+    print(f"Feature counts for Perlin Noise:         {count_features(noise_features)}")
+    print(f"Feature counts for Eroded Terrain:       {count_features(eroded_terrain_features)}")
+    print(f"Feature counts for Real Terrain:         {count_features(real_terrain_features)}")
+    print(f"Feature counts for W-M Fractal Terrain:  {count_features(wm_features)}")
+
+    # Set up a 4x2 subplot
+    fig, axs = plt.subplots(4, 2, figsize=(12, 13))
 
     axs[0, 0].imshow(noise, cmap='gray', interpolation='lanczos')
     axs[0, 0].set_title("Perlin Noise")
@@ -834,8 +852,16 @@ if __name__ == "__main__":  # testing
     axs[2, 1].axis('off')
     fig.colorbar(axs[2, 1].images[0], ax=axs[2, 1])
 
+    axs[3, 0].imshow(wm_noise, cmap='gray', interpolation='lanczos')
+    axs[3, 0].set_title("W–M Fractal Terrain")
+    axs[3, 0].axis('off')
+    fig.colorbar(axs[3, 0].images[0], ax=axs[3, 0])
+
+    axs[3, 1].imshow(wm_features, cmap='gray', interpolation='lanczos')
+    axs[3, 1].set_title("W–M Feature Map")
+    axs[3, 1].axis('off')
+    fig.colorbar(axs[3, 1].images[0], ax=axs[3, 1])
+
     plt.tight_layout()
     plt.show()
-
-
 
