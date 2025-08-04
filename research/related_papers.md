@@ -55,37 +55,27 @@
 - The terrains are rendered in Unreal Engine as 50.4x50.4 m landscapes for AGV testing using a simulated Clearpath Husky.
   - Resolution: 5cm / pixel
 ---
-
-### Polynomial methods for fast Procedural Terrain Generation  
-<https://arxiv.org/pdf/1610.03525>  
-#### _Add description here_
-
----
-
 ### Terrain generation using genetic algorithms  
 <https://www.cs.york.ac.uk/rts/docs/GECCO_2005/Conference%20proceedings/docs/p1463.pdf>  
 #### _Add description here_
 
 ---
-
 ### PTRM: Perceived Terrain Realism Metric  
 <https://dl.acm.org/doi/10.1145/3514244>  
 #### _Add description here_
 
 ---
-
 ### Controlled Procedural Terrain Generation Using Software Agents  
 <https://ianparberry.com/pubs/terrain.pdf>  
 #### _Add description here_
 
 ---
-
 ### A multivariate Weierstrass–Mandelbrot function  
 <https://www.researchgate.net/publication/239037074_A_Multivariate_Weierstrass-Mandelbrot_Function>  
 #### _Add description here_
 
 ---
-
 ### Fractal terrain generation for vehicle simulation  
 <https://www.academia.edu/84221963/Fractal_terrain_generation_for_vehicle_simulation>  
 #### _Add description here_
+
