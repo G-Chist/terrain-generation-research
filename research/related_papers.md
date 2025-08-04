@@ -57,7 +57,7 @@
 ---
 ### Terrain Generation Using Genetic Algorithms  
 <https://www.cs.york.ac.uk/rts/docs/GECCO_2005/Conference%20proceedings/docs/p1463.pdf>  
-#### Can be useful for user-guided large-scale terrain generation
+#### Can be useful for user-guided large-scale terrain generation with obstacles
 - The paper proposes a two-stage genetic algorithm (GA) approach for 3D terrain generation using intuitive user input.
 - Existing procedural and fractal techniques are fast but lack user control; sculpting is flexible but labor-intensive; GIS data is realistic but inflexible.
 - This method combines the benefits of real-world terrain features and controllable layout while minimizing user effort.
@@ -92,8 +92,30 @@
 ---
 ### PTRM: Perceived Terrain Realism Metric  
 <https://dl.acm.org/doi/10.1145/3514244>  
-#### _Add description here_
-
+#### Can be useful for realistic large-scale terrain generation
+- Terrains have certain features (pits, ridges, footslopes, etc.)
+- ![Terrain features](images/p5i1.png)
+- Introduces a perceptual realism metric (PTRM) for terrains based on human perception.
+- Input: Digital Elevation Map (DEM).
+- Output: A normalized realism score (0.0–1.0) based on geomorphological features.
+- Relies on geomorphons, localized landform features (e.g., valleys, ridges, hollows).
+  - Geomorphons are extracted from DEMs using the GRASS GIS tool.
+  - ![Geomorphon map](images/p5i2.png)
+- Two large-scale user studies were conducted (2AFC design via Amazon Mechanical Turk):
+  - Experiment 1: Compared real vs. synthetic terrains for perceived realism.
+  - Experiment 2: Assessed terrains after CycleGAN-based feature transfer (real<->synthetic).
+  - ![CycleGAN feature transfer](images/p5i3.png)
+  - ![CycleGAN feature transfer, rendered](images/p5i4.png)
+- Strong correlation found between certain features and perceived realism:
+  - Highest positive impact: Valley (0.66), Ridge (0.64), Peak (0.44).
+  - Negative impact: Slope (-0.65), Shoulder (-0.17), Flat (-0.10).
+- Visualizations show clustering of synthetic terrains (low diversity) vs. scattered real terrains.
+- Applications:
+  - Quantitative validation of terrain realism for simulations or game environments.
+  - Guiding procedural generation to include perceptually important terrain features.
+- Limitations:
+  - Does not account for large-scale terrain structure or visual elements like vegetation.
+  - Sensitive to DEM resolution (~200m/pixel in the study).
 ---
 ### Controlled Procedural Terrain Generation Using Software Agents  
 <https://ianparberry.com/pubs/terrain.pdf>  
