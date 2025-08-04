@@ -741,6 +741,36 @@ def save_array_as_grayscale_png(array: np.ndarray, filepath: str) -> None:
     image.save(filepath)
 
 
+def crop_grid_by_percent(grid, center_x_pct, center_y_pct, size):
+    """
+    Crops an n x n square from a 2D grid using percent-based center coordinates.
+
+    Parameters:
+        grid (np.ndarray): 2D input array.
+        center_x_pct (float): X center as a percentage (0 to 1).
+        center_y_pct (float): Y center as a percentage (0 to 1).
+        size (int): Size of the square to crop.
+
+    Returns:
+        np.ndarray: Cropped subgrid of shape (size, size)
+    """
+    h, w = grid.shape
+    center_x = int(center_x_pct * h)
+    center_y = int(center_y_pct * w)
+
+    half = size // 2
+    x_start = max(center_x - half, 0)
+    y_start = max(center_y - half, 0)
+    x_end = min(x_start + size, h)
+    y_end = min(y_start + size, w)
+
+    # Re-adjust start if crop is too close to border
+    x_start = max(x_end - size, 0)
+    y_start = max(y_end - size, 0)
+
+    return grid[x_start:x_end, y_start:y_end]
+
+
 # DIFFERENT USEFUL KERNEL EXAMPLES
 emboss = np.array([
     [-2, -1, 0],

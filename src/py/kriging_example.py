@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
-from utils import generate_perlin_noise_2d
+from utils import generate_perlin_noise_2d, load_bw_image_as_normalized_array, crop_grid_by_percent
 from scipy.ndimage import zoom
 from mpl_toolkits.mplot3d import Axes3D  # Needed for 3D plots
 
 # Coarse grid (known values)
-Z = generate_perlin_noise_2d(shape=(16, 16), res=(8, 8))
+Z = load_bw_image_as_normalized_array(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_example.png")
+Z = crop_grid_by_percent(Z, 30, 30, 32)
 n = Z.shape[0]
 
 # Coordinates for coarse grid
@@ -23,7 +24,7 @@ OK = OrdinaryKriging(
 )
 
 # Define finer grid (subdivide each cell)
-k = 2
+k = 4
 fine_n = n * k
 x_fine = np.linspace(0, n - 1, fine_n)
 y_fine = np.linspace(0, n - 1, fine_n)
