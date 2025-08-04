@@ -116,12 +116,7 @@
   - Does not account for large-scale terrain structure or visual elements like vegetation.
   - Sensitive to DEM resolution (~200m/pixel in the study).
 ---
-### Controlled Procedural Terrain Generation Using Software Agents  
-<https://ianparberry.com/pubs/terrain.pdf>  
-#### _Add description here_
-
----
-### A multivariate Weierstrass–Mandelbrot function  
+### A multivariate Weierstrass-Mandelbrot function  
 <https://www.researchgate.net/publication/239037074_A_Multivariate_Weierstrass-Mandelbrot_Function>  
 #### _Add description here_
 
