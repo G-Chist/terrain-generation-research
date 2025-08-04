@@ -1,17 +1,21 @@
 ### Procedural city/road generation  
 <https://cgl.ethz.ch/Downloads/Publications/Papers/2001/p_Par01.pdf>  
-#### Can be useful for large-scale terrain realism  
-- We can take a water map, an elevation map, and a population density map as inputs. Later, we can apply an L-system and generate a set of roads.  
+#### Can be useful for large-scale terrain realism
+- The paper demonstrates how a water map, an elevation map, and a population density map can be used as inputs to apply an L-system for generating a set of roads.  
   - ![Roadmap generated from water + elevation + population density maps](images/p1i1.png)  
-- By using L-systems on an elevation map, we can generate fractals, add them to an existing elevation map, and then apply blurring to create a more realistic terrain on a large scale.  
+- By applying L-systems to an elevation map, fractals can be generated and integrated into the existing terrain, followed by blurring techniques to create more realistic large-scale terrain features.  
   - ![Highways generated from a population density map](images/p1i2.png)
-
 ---
-
 ### Learning ground traversability from simulations  
 <https://idsia-robotics.github.io/files/publications/chavez-garcia2018.pdf>  
-#### _Add description here_
-
+#### Can be useful for traversability estimation
+- The paper demonstrates how a terrain patch can be classified as "traversable" or "not traversable" using a CNN.
+  - Inputs: height map
+  - Labels: a robot is simulated traversing the height map using Gazebo and ODE -> terrain is classified as "traversable" or "not traversable"
+  - Output: binary classification as "traversable" or "not traversable"
+  - ![CNN traversability training](images/p2i1.png)
+- Both procedurally generated and real-life patches of terrain were used.
+  - ![CNN output on real-life terrain](images/p2i2.png)
 ---
 
 ### Multifractal Terrain Generation for Evaluating Autonomous Off-Road Ground Vehicles  
