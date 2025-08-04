@@ -1,40 +1,66 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
+from utils import generate_perlin_noise_2d
+from scipy.ndimage import zoom
+from mpl_toolkits.mplot3d import Axes3D  # Needed for 3D plots
 
-# Grid size
-n = 70
+# Coarse grid (known values)
+Z = generate_perlin_noise_2d(shape=(16, 16), res=(8, 8))
+n = Z.shape[0]
 
-# Known data points: (x, y, value)
-data = np.array([
-    [10, 10, 0.5],
-    [40, 10, 1.0],
-    [25, 25, 1.5],
-    [10, 40, 2.0],
-    [40, 40, 2.5],
-])
+# Coordinates for coarse grid
+x_coarse = np.arange(n)
+y_coarse = np.arange(n)
+Xc, Yc = np.meshgrid(x_coarse, y_coarse)
+coords = np.column_stack((Xc.ravel(), Yc.ravel()))
+values = Z.ravel()
 
-# Grid to interpolate on
-grid_x = np.linspace(0, n - 1, n)
-grid_y = np.linspace(0, n - 1, n)
-
-# Create Ordinary Kriging object
+# Fit Kriging model
 OK = OrdinaryKriging(
-    data[:, 0], data[:, 1], data[:, 2],
-    variogram_model="spherical",  # or "linear", "exponential", etc.
-    verbose=False,
-    enable_plotting=False,
+    coords[:, 0], coords[:, 1], values,
+    variogram_model='exponential', verbose=False, enable_plotting=False
 )
 
-# Perform Kriging on the grid
-z_interp, ss = OK.execute("grid", grid_x, grid_y)
+# Define finer grid (subdivide each cell)
+k = 2
+fine_n = n * k
+x_fine = np.linspace(0, n - 1, fine_n)
+y_fine = np.linspace(0, n - 1, fine_n)
+Xf, Yf = np.meshgrid(x_fine, y_fine)
 
-# Plot result
-plt.figure(figsize=(6, 5))
-plt.imshow(z_interp, origin='lower', extent=(0, n-1, 0, n-1), cmap='terrain')
-plt.colorbar(label="Interpolated Value")
-plt.scatter(data[:, 0], data[:, 1], c=data[:, 2], edgecolor='black', cmap='terrain', label='Data Points')
-plt.title("Ordinary Kriging Interpolation")
-plt.legend()
+# Interpolate with Kriging
+Z_interp, _ = OK.execute("grid", x_fine, y_fine)
+
+# Subdivide using nearest-neighbor
+Z_subdivided = zoom(Z, k, order=0)
+
+# Plot 2D and 3D versions
+fig = plt.figure(figsize=(18, 10))
+
+# 2D plots
+for i, (data, title) in enumerate([
+    (Z, "Original Grid"),
+    (Z_subdivided, f"Subdivided Grid ({fine_n}×{fine_n})"),
+    (Z_interp, f"Kriged Grid ({fine_n}×{fine_n})")
+]):
+    ax = fig.add_subplot(2, 3, i + 1)
+    ax.set_title(title)
+    im = ax.imshow(data, origin="lower", cmap="viridis")
+    plt.colorbar(im, ax=ax)
+
+# 3D plots
+for i, (data, X, Y, title) in enumerate([
+    (Z, Xc, Yc, "Original Grid (3D)"),
+    (Z_subdivided, Xf, Yf, "Subdivided Grid (3D)"),
+    (Z_interp, Xf, Yf, "Kriged Grid (3D)")
+]):
+    ax = fig.add_subplot(2, 3, i + 4, projection="3d")
+    ax.plot_surface(X, Y, data, cmap="viridis", edgecolor="none")
+    ax.set_title(title)
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+
 plt.tight_layout()
 plt.show()
