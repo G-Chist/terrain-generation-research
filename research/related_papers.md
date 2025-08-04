@@ -138,5 +138,22 @@
 ---
 ### Fractal terrain generation for vehicle simulation  
 <https://www.academia.edu/84221963/Fractal_terrain_generation_for_vehicle_simulation>  
-#### _Add description here_
+#### Can be useful for small-scale terrain generation
+- The 3D Weierstrass-Mandelbrot function was used.
+- The paper discusses RMSE (Root Mean Squared Elevation), a common method of describing surface roughness
+![RMSE formula](images/p7i1.png)
+  - `h`: profile height
+  - `n`: number of samples
+  - Drawbacks: the profile must have a uniform roughness to be well-described by RMSE.
+- Power Spectral Density (PSD) is also a useful method for roughness estimation.
+![PSD graph](images/p7i2.png)
+- International Roughness Index (IRI) is a method for terrain roughness estimation that uses the parameters a quarter car model at a speed of 80km/h and has a linear relationship with RMSE.
+![Quarter car model](images/p7i3.png)
+![IRI vs RMSE](images/p7i4.png)
+- Simulations were run for a small SUV in Carsim on 3D W-M surfaces with speeds ranging from 8 to 32 km/h.
+- Conclusions:
+  - The response of a vehicle travelling over the terrain surface can be evaluated using vertical acceleration, roll rate and pitch rate.
+  - There may be certain speeds at which the rotation rates are higher than expected, based on the resonant behaviour of the vehicle’s suspension.
+  - The 3D Weierstrass-Mandelbrot fractal function is an effective way of generating a terrain surface which can be used for vehicle simulations.
+  - The surfaces generated can be evaluated using well defined terrain characterisation metrics such as the RMSE, PSD, and IRI. It was observed that both the RMSE and IRI increase exponentially for surfaces with increasing scaling coefficient (G).
 
