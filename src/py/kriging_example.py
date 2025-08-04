@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d import Axes3D  # Needed for 3D plots
 
 # Coarse grid (known values)
 Z = load_bw_image_as_normalized_array(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_example.png")
-Z = crop_grid_by_percent(Z, 30, 30, 32)
+Z = crop_grid_by_percent(Z, 30, 30, 28)
 n = Z.shape[0]
 
 # Coordinates for coarse grid
@@ -24,7 +24,7 @@ OK = OrdinaryKriging(
 )
 
 # Define finer grid (subdivide each cell)
-k = 4
+k = 10
 fine_n = n * k
 x_fine = np.linspace(0, n - 1, fine_n)
 y_fine = np.linspace(0, n - 1, fine_n)
