@@ -98,7 +98,7 @@
 - Introduces a perceptual realism metric (PTRM) for terrains based on human perception.
 - Input: Digital Elevation Map (DEM).
 - Output: A normalized realism score (0.0-1.0) based on geomorphological features.
-- Relies on geomorphons, localized landform features (e.g., valleys, ridges, hollows).
+- Relies on geomorphons, localized landform features.
   - Geomorphons are extracted from DEMs using the GRASS GIS tool.
   - ![Geomorphon map](images/p5i2.png)
 - Two large-scale user studies were conducted (2AFC design via Amazon Mechanical Turk):
