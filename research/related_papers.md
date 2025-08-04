@@ -109,7 +109,6 @@
 - Strong correlation found between certain features and perceived realism:
   - Highest positive impact: Valley (0.66), Ridge (0.64), Peak (0.44).
   - Negative impact: Slope (-0.65), Shoulder (-0.17), Flat (-0.10).
-- Visualizations show clustering of synthetic terrains (low diversity) vs. scattered real terrains.
 - Applications:
   - Quantitative validation of terrain realism for simulations or game environments.
   - Guiding procedural generation to include perceptually important terrain features.
