@@ -41,7 +41,7 @@ fig = plt.figure(figsize=(18, 10))
 
 # 2D plots
 for i, (data, title) in enumerate([
-    (Z, "Original Grid"),
+    (Z, f"Original Grid ({n}×{n})"),
     (Z_subdivided, f"Subdivided Grid ({fine_n}×{fine_n})"),
     (Z_interp, f"Kriged Grid ({fine_n}×{fine_n})")
 ]):
