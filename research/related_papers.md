@@ -55,10 +55,40 @@
 - The terrains are rendered in Unreal Engine as 50.4x50.4 m landscapes for AGV testing using a simulated Clearpath Husky.
   - Resolution: 5cm / pixel
 ---
-### Terrain generation using genetic algorithms  
+### Terrain Generation Using Genetic Algorithms  
 <https://www.cs.york.ac.uk/rts/docs/GECCO_2005/Conference%20proceedings/docs/p1463.pdf>  
-#### _Add description here_
-
+#### Can be useful for user-guided large-scale terrain generation
+- The paper proposes a two-stage genetic algorithm (GA) approach for 3D terrain generation using intuitive user input.
+- Existing procedural and fractal techniques are fast but lack user control; sculpting is flexible but labor-intensive; GIS data is realistic but inflexible.
+- This method combines the benefits of real-world terrain features and controllable layout while minimizing user effort.
+- Stage 1: Terrain Silhouette Generation
+  - Input: A rough 2D map with labeled regions (e.g., hills, mountains) either hand-drawn or randomly generated.
+  - A GA is used to refine polygonal region boundaries into more natural silhouettes by encoding angle-based transitions.
+  - ![Terrain silhouette refinement](images/p4i1.png)
+  - Fitness function measures boundary smoothness, applied across multiple levels of detail (granularities).
+  - Each boundary segment can have its own smoothness parameter (S) for realism.
+  - Crossover and mutation operators modify angles between line segments to evolve natural shapes.
+  - ![Gene crossover](images/p4i2.png)
+- Stage 2: Terrain Height Field Generation
+  - Input: The refined silhouette and a database of real-world or user-created terrain height field samples.
+  - Each chromosome represents a sequence of transformations (e.g., rotate, scale) applied to overlapping patches of height data.
+  - Patches are blended using Gaussian kernels to avoid seams.
+  - Fitness function evaluates:
+    - Resemblance of terrain patches to example samples.
+    - Smooth transitions at region boundaries (no sharp cliffs).
+    - Terrain feature characteristics like slope, frequency content, and presence of ridges/valleys.
+  - Retains region-level fitness to guide crossover/mutation locally and avoid slow convergence.
+  - Supports repeatability via fixed random seeds for deterministic outputs.
+  - ![Visualized heightmap](images/p4i3.png)
+- Advantages
+  - Produces diverse, realistic terrains from limited user input.
+  - Balances procedural freedom with realism from data.
+  - Encodes operations rather than full heightmaps, making it scalable.
+  - Designed to be implemented as a plugin or standalone tool.
+- Limitations & Future Work
+  - Silhouette GA limited by angular constraints - exploring more flexible edge modeling.
+  - Currently uses manually labeled terrain samples - aims to automate with image processing and classification.
+  - Future fitness functions could improve feature coherence and support rivers or complex transitions.
 ---
 ### PTRM: Perceived Terrain Realism Metric  
 <https://dl.acm.org/doi/10.1145/3514244>  
