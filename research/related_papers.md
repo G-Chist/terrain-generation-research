@@ -118,8 +118,23 @@
 ---
 ### A multivariate Weierstrass-Mandelbrot function  
 <https://www.researchgate.net/publication/239037074_A_Multivariate_Weierstrass-Mandelbrot_Function>  
-#### _Add description here_
-
+#### Can be useful for small-scale terrain generation
+- The 3D W-M function is used to assign elevation values `z(x, y)` at grid locations `(x, y)` in a Digital Elevation Map (DEM), generating complex, fractal-like terrain structures.
+- The elevation at a point `(x, y)` is given by: 
+![W-M formula](images/p6i1.png)
+#### Parameter Descriptions
+- `x, y`: Grid coordinates on the DEM.
+- `z(x, y)`: Elevation value at location `(x, y)`.
+- `M`: Number of directions (ridge-like surface layers).
+- `n`: Frequency index (ranging from 1 to `n_max`).
+- `n_max`: Upper cutoff for frequency components.
+- `γ` (gamma): Frequency scaling factor (controls frequency density).
+- `D`: Fractal dimension (controls roughness/complexity).
+- `ϕ{m,n}`: Uniform random phase for each wave component (adds randomness).
+- `L`: Sampling length.
+- `G`: Elevation scaling coefficient.
+- `A`: Amplitude normalizer for maintaining scale consistency.
+![W-M terrain](images/p6i2.png)
 ---
 ### Fractal terrain generation for vehicle simulation  
 <https://www.academia.edu/84221963/Fractal_terrain_generation_for_vehicle_simulation>  
