@@ -50,16 +50,10 @@
 - Instead of using monofractal noise, multiple layers of fractal noise are combined.
 - ![Multifractal vs monofractal terrain](images/p3i1.png)
 - Multiple monofractal terrains (low-, mid-, high-frequency) are generated using different W-M parameters and combined via pixel-wise multiplication.
-- Varying the fractal dimension D of the high-frequency terrain component affects overall terrain roughness.
+- Varying the fractal dimension D of the high-frequency terrain component affects overall terrain roughness and traversability.
 - ![Multifractal terrain generation](images/p3i2.png)
 - The terrains are rendered in Unreal Engine as 50.4x50.4 m landscapes for AGV testing using a simulated Clearpath Husky.
   - Resolution: 5cm / pixel
----
-
-### Fast Hydraulic Erosion Simulation and Visualization on GPU  
-<https://inria.hal.science/inria-00402079/document>  
-#### _Add description here_
-
 ---
 
 ### Polynomial methods for fast Procedural Terrain Generation  
