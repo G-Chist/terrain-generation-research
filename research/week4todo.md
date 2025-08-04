@@ -1,0 +1,7 @@
+- summarize the papers found, include relevance to the project
+- research ordinary kriging
+- research adding negative (pits) and positive (hills/blocks/etc) obstacles to terrain
+- research ArcGIS
+- continue researching adding paths to a terrain
+- generate terrains with resolution <20cm
+- research NASA datasets with resolutions of <=1m
