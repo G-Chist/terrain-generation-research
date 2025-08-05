@@ -42,26 +42,12 @@ fig = plt.figure(figsize=(18, 10))
 # 2D plots
 for i, (data, title) in enumerate([
     (Z, f"Original Grid ({n}×{n})"),
-    (Z_subdivided, f"Subdivided Grid ({fine_n}×{fine_n})"),
-    (Z_interp, f"Kriged Grid ({fine_n}×{fine_n})")
+    (Z_interp, f"Grid After Kriging ({fine_n}×{fine_n})")
 ]):
-    ax = fig.add_subplot(2, 3, i + 1)
+    ax = fig.add_subplot(3, 3, i + 1)
     ax.set_title(title)
     im = ax.imshow(data, origin="lower", cmap="viridis")
     plt.colorbar(im, ax=ax)
-
-# 3D plots
-for i, (data, X, Y, title) in enumerate([
-    (Z, Xc, Yc, "Original Grid (3D)"),
-    (Z_subdivided, Xf, Yf, "Subdivided Grid (3D)"),
-    (Z_interp, Xf, Yf, "Kriged Grid (3D)")
-]):
-    ax = fig.add_subplot(2, 3, i + 4, projection="3d")
-    ax.plot_surface(X, Y, data, cmap="viridis", edgecolor="none")
-    ax.set_title(title)
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.set_zlabel("Z")
 
 plt.tight_layout()
 plt.show()
