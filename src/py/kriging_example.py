@@ -1,40 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
-from utils import generate_perlin_noise_2d, load_bw_image_as_normalized_array, crop_grid_by_percent
+from utils import generate_perlin_noise_2d, load_bw_image_as_normalized_array, crop_grid_by_percent, kriging_interpolate
 from scipy.ndimage import zoom
 from mpl_toolkits.mplot3d import Axes3D  # Needed for 3D plots
 
 # Coarse grid (known values)
 Z = load_bw_image_as_normalized_array(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_example.png")
 Z = crop_grid_by_percent(Z, 30, 30, 28)
+
+Z_interp = kriging_interpolate(Z=Z, subdivision=10, variogram_model='exponential')
 n = Z.shape[0]
-
-# Coordinates for coarse grid
-x_coarse = np.arange(n)
-y_coarse = np.arange(n)
-Xc, Yc = np.meshgrid(x_coarse, y_coarse)
-coords = np.column_stack((Xc.ravel(), Yc.ravel()))
-values = Z.ravel()
-
-# Fit Kriging model
-OK = OrdinaryKriging(
-    coords[:, 0], coords[:, 1], values,
-    variogram_model='exponential', verbose=False, enable_plotting=False
-)
-
-# Define finer grid (subdivide each cell)
-k = 10
-fine_n = n * k
-x_fine = np.linspace(0, n - 1, fine_n)
-y_fine = np.linspace(0, n - 1, fine_n)
-Xf, Yf = np.meshgrid(x_fine, y_fine)
-
-# Interpolate with Kriging
-Z_interp, _ = OK.execute("grid", x_fine, y_fine)
-
-# Subdivide using nearest-neighbor
-Z_subdivided = zoom(Z, k, order=0)
+fine_n = Z_interp.shape[0]
 
 # Plot 2D and 3D versions
 fig = plt.figure(figsize=(18, 10))

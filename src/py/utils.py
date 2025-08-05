@@ -6,6 +6,7 @@ import imageio.v3 as iio
 from scipy.ndimage import generic_filter
 import rasterio
 from PIL import Image
+from pykrige.ok import OrdinaryKriging
 
 
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -813,6 +814,55 @@ def load_elevation_grid(tif_file):
 
     return elevation, x_coords, y_coords
 
+
+def kriging_interpolate(Z, subdivision=10, variogram_model='exponential'):
+    """
+    Perform kriging interpolation on a coarse 2D grid to produce a finer grid.
+
+    Parameters
+    ----------
+    Z : numpy.ndarray, shape (n, n)
+        2D coarse grid of known values to interpolate.
+
+    subdivision : int, optional (default=10)
+        Subdivision multiplier. Each coarse grid cell is subdivided by this factor
+        to create a finer grid.
+
+    variogram_model : str, optional (default='exponential')
+        Variogram model to use in Ordinary Kriging. Supported models include:
+        'linear', 'power', 'gaussian', 'spherical', 'exponential', etc.
+
+    Returns
+    -------
+    Z_interp : numpy.ndarray, shape (n*subdivision, n*subdivision)
+        Fine grid obtained by kriging interpolation.
+
+    """
+    n = Z.shape[0]
+
+    # Coordinates for coarse grid
+    x_coarse = np.arange(n)
+    y_coarse = np.arange(n)
+    Xc, Yc = np.meshgrid(x_coarse, y_coarse)
+    coords = np.column_stack((Xc.ravel(), Yc.ravel()))
+    values = Z.ravel()
+
+    # Fit Kriging model
+    OK = OrdinaryKriging(
+        coords[:, 0], coords[:, 1], values,
+        variogram_model=variogram_model,
+        verbose=False, enable_plotting=False
+    )
+
+    # Define finer grid (subdivide each cell)
+    fine_n = n * subdivision
+    x_fine = np.linspace(0, n - 1, fine_n)
+    y_fine = np.linspace(0, n - 1, fine_n)
+
+    # Interpolate with Kriging
+    Z_interp, _ = OK.execute("grid", x_fine, y_fine)
+
+    return Z_interp
 
 
 # DIFFERENT USEFUL KERNEL EXAMPLES
