@@ -14,7 +14,8 @@ y_target = generate_perlin_noise_2d(shape=(n_row, n_col), res=(8, 8))
 y_target = apply_convolution(matrix=y_target, kernel=box_blur_25x25)
 
 # Reshape inputs for symbolic regression
-X = np.stack([X_grid.ravel(), Y_grid.ravel()], axis=1)  # shape: (n_row*n_col, 2)
+X = np.stack([X_grid.ravel(), Y_grid.ravel()],
+             axis=1)  # shape: (n_row*n_col, 2)
 y_target = y_target.ravel()  # turn array into 1D
 
 # Fit symbolic regression model
@@ -53,7 +54,8 @@ fig = plt.figure(figsize=(10, 7))
 ax = fig.add_subplot(111, projection='3d')
 
 # Ground truth dots
-ax.scatter(X[:, 0], X[:, 1], y_target, color='red', alpha=0.5, label="Ground Truth (Perlin Noise)")
+ax.scatter(X[:, 0], X[:, 1], y_target, color='red',
+           alpha=0.5, label="Ground Truth (Perlin Noise)")
 
 # Fitted surface
 ax.plot_surface(xx, yy, Z_pred, cmap='viridis', alpha=0.8)
@@ -65,4 +67,3 @@ ax.set_zlabel("f(x, y)")
 plt.legend()
 plt.tight_layout()
 plt.show()
-

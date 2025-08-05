@@ -4,7 +4,8 @@ from pathlib import Path
 from utils import load_bw_image_as_normalized_array, feature_map, count_features
 
 # Input folders
-real_dir = Path(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\_dataset")
+real_dir = Path(
+    r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\_dataset")
 
 # Output CSV file
 output_csv = r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\real_terrain_features_dataset.csv"
@@ -28,7 +29,8 @@ with open(output_csv, mode="w", newline="") as file:
         counts = count_features(features)
 
         total = sum(counts.values())
-        proportions = {k: (v / total if total > 0 else 0.0) for k, v in counts.items()}
+        proportions = {k: (v / total if total > 0 else 0.0)
+                       for k, v in counts.items()}
         proportions["realness"] = 1.0
 
         writer.writerow(proportions)
