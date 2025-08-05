@@ -152,10 +152,12 @@ def generate_faces_from_grid(n_row, n_col):
 
 
 if __name__ == '__main__':  # example
-    # import matplotlib.pyplot as plt
     
     size = 128
     res = 500
+    random_seed = 123
+
+    np.random.seed(random_seed)
 
     # Create meshgrid
     x_vals = np.linspace(0, size, res)
@@ -197,15 +199,10 @@ if __name__ == '__main__':  # example
     terrain_collection.objects.link(wm_terrain)
 
     # Plot
-    """
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot_surface(x, y, z, cmap='viridis', linewidth=0)
-    ax.set_aspect('equal', adjustable='box')
-    ax.set_title('3D Weierstrass-Mandelbrot Surface')
-    plt.show()
+    #"""
+    import matplotlib.pyplot as plt
 
     plt.imshow(z, cmap='gray', interpolation='lanczos')  # height map
     plt.colorbar()
     plt.show()
-    """
+    #"""
