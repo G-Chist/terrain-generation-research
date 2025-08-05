@@ -1,3 +1,37 @@
+"""
+PLEASE READ THIS COMMENT BEFORE USING THE CODE!
+
+------------------------------------------
+Weierstrass-Mandelbrot Function Terrain Generator for Blender
+------------------------------------------
+
+This script generates a procedural terrain mesh using fractal noise
+and imports it directly into Blender.
+
+Key Components:
+---------------
+- Fractal Noise Generation:
+    Creates smooth 2D noise patterns for terrain modeling.
+- Mesh Conversion:
+    Converts the 2D noise map into a 3D mesh grid (x, y, z) suitable for Blender.
+- Blender Integration:
+    Automatically creates and links a mesh object in the Blender scene.
+
+Modules Used:
+-------------
+- `numpy`: Matrix operations and numerical tools.
+- `bpy`: Blender's Python API for creating objects and meshes.
+
+Usage Instructions:
+-------------------
+- Update the image path to set a desired texture (see img_path under # TEXTURING)
+- Run the script inside Blender's Scripting workspace:
+   - Open Blender.
+   - Go to the Scripting tab.
+   - Load this script.
+   - Click Run Script.
+"""
+
 import numpy as np
 import bpy
 
