@@ -56,7 +56,6 @@ from typing import Tuple, List
 from mathutils import Vector
 
 
-
 def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
     """
         Apply a 2D convolution operation to a matrix using a given square kernel.
@@ -88,7 +87,8 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
     assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
 
     kernel = kernel.astype(np.float32)
-    kernel /= kernel.sum() if kernel.sum() != 0 else 1  # normalize if not edge detector
+    # normalize if not edge detector
+    kernel /= kernel.sum() if kernel.sum() != 0 else 1
 
     k = kernel.shape[0] // 2  # padding size
 
@@ -123,8 +123,8 @@ def apply_sobel_magnitude(matrix):
 
     sobel_y = np.array([
         [-1, -2, -1],
-        [ 0,  0,  0],
-        [ 1,  2,  1]
+        [0,  0,  0],
+        [1,  2,  1]
     ], dtype=np.float32)
 
     gx = apply_convolution(matrix, sobel_x)
@@ -252,7 +252,7 @@ def generate_perlin_noise_2d(
     delta = (res[0] / shape[0], res[1] / shape[1])
     d = (shape[0] // res[0], shape[1] // res[1])
     grid = np.mgrid[0:res[0]:delta[0], 0:res[1]:delta[1]] \
-               .transpose(1, 2, 0) % 1
+        .transpose(1, 2, 0) % 1
     # Gradients
     angles = 2 * np.pi * np.random.rand(res[0] + 1, res[1] + 1)
     gradients = np.dstack((np.cos(angles), np.sin(angles)))
@@ -334,7 +334,8 @@ def generate_fractal_noise_2d(
     amplitude = 1
     for _ in range(octaves):
         noise += amplitude * generate_perlin_noise_2d(
-            shape, (frequency * res[0], frequency * res[1]), tileable, interpolant
+            shape, (frequency * res[0], frequency *
+                    res[1]), tileable, interpolant
         )
         frequency *= lacunarity
         amplitude *= persistence
@@ -438,19 +439,32 @@ def dig_path(
 
 
 def generate_terrain_noise(
-        size=1024,                         # size (int): Width and height of the terrain grid.
-        res=(8, 8),                        # res (tuple): Base resolution (periods) of the Perlin noise grid.
-        octaves=8,                         # octaves (int): Number of fractal noise layers to combine.
-        random_seed=123,                   # random_seed (int): Seed for NumPy random generator.
-        sea_level=0.5,                     # sea_level (float): Threshold below which terrain is considered 'sea'.
-        sky_level=1.0,                     # sky_level (float): Threshold above which terrain is flattened to sky level.
-        sea_roughness=0.3,                 # sea_roughness (float): Random fluctuation intensity added near sea level.
-        layers=0,                          # layers (int): Number of times to add the terrain to itself.
-        trend=None,                        # trend (np.ndarray): An optional trend to add to the surface.
-        terrace=False,                     # terrace (bool): Whether or not to apply terracing to the terrain.
-        terrace_steepness=11,              # terrace_steepness (int): Defines how steep terracing is.
-        terrace_frequency=10,              # terrace_frequency (int): Defines the level of detail for terracing.
-        kernels=None                       # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+        # size (int): Width and height of the terrain grid.
+        size=1024,
+        # res (tuple): Base resolution (periods) of the Perlin noise grid.
+        res=(8, 8),
+        # octaves (int): Number of fractal noise layers to combine.
+        octaves=8,
+        # random_seed (int): Seed for NumPy random generator.
+        random_seed=123,
+        # sea_level (float): Threshold below which terrain is considered 'sea'.
+        sea_level=0.5,
+        # sky_level (float): Threshold above which terrain is flattened to sky level.
+        sky_level=1.0,
+        # sea_roughness (float): Random fluctuation intensity added near sea level.
+        sea_roughness=0.3,
+        # layers (int): Number of times to add the terrain to itself.
+        layers=0,
+        # trend (np.ndarray): An optional trend to add to the surface.
+        trend=None,
+        # terrace (bool): Whether or not to apply terracing to the terrain.
+        terrace=False,
+        # terrace_steepness (int): Defines how steep terracing is.
+        terrace_steepness=11,
+        # terrace_frequency (int): Defines the level of detail for terracing.
+        terrace_frequency=10,
+        # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+        kernels=None
 ):
     """
     Generate filtered Perlin-based terrain noise with optional convolution kernels.
@@ -478,14 +492,17 @@ def generate_terrain_noise(
     np.random.seed(random_seed)
 
     # Generate fractal noise
-    noise = generate_fractal_noise_2d(shape=shape, res=res, tileable=(True, True), octaves=octaves)
+    noise = generate_fractal_noise_2d(
+        shape=shape, res=res, tileable=(True, True), octaves=octaves)
 
     # Normalize noise
-    noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
+    noise_filtered = np.interp(
+        noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
     rand_range = (max_amplitude - min_amplitude) * 0.01
 
     # Clip to sky level
-    noise_filtered = np.where(noise_filtered < sky_level, noise_filtered, sky_level)
+    noise_filtered = np.where(
+        noise_filtered < sky_level, noise_filtered, sky_level)
 
     # Add randomness below sea level
     noise_filtered = np.where(
@@ -506,13 +523,15 @@ def generate_terrain_noise(
         noise_filtered += trend
 
     # Normalize again
-    noise_filtered = np.interp(noise_filtered, (noise_filtered.min(), noise_filtered.max()), (min_amplitude, max_amplitude))
+    noise_filtered = np.interp(noise_filtered, (noise_filtered.min(
+    ), noise_filtered.max()), (min_amplitude, max_amplitude))
 
     # Terrace the noise
     if terrace:
         freq = terrace_frequency
         step = np.round(noise_filtered * freq) / freq
-        noise_filtered = np.sin((noise_filtered - step) * 2.45) ** terrace_steepness + step
+        noise_filtered = np.sin((noise_filtered - step)
+                                * 2.45) ** terrace_steepness + step
 
     # Apply convolution kernel / kernels
     if kernels is None:
@@ -521,7 +540,8 @@ def generate_terrain_noise(
         kernels = [kernels]
 
     for kernel in kernels:
-        noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
+        noise_filtered = apply_convolution(
+            matrix=noise_filtered, kernel=kernel)
 
     return noise_filtered
 
@@ -624,7 +644,8 @@ if __name__ == '__main__':
     x_trend = np.linspace(0, 10, size)
     y_trend = np.linspace(0, 10, size)
     X_trend, Y_trend = np.meshgrid(x_trend, y_trend)
-    trend = 1*np.sin(X_trend + 2*Y_trend) + 1.45*np.cos(1.7*X_trend + 0.5*Y_trend)
+    trend = 1*np.sin(X_trend + 2*Y_trend) + 1.45 * \
+        np.cos(1.7*X_trend + 0.5*Y_trend)
 
     # GENERATION
     noise_filtered = generate_terrain_noise(size=size,
@@ -666,7 +687,8 @@ if __name__ == '__main__':
     # noise_filtered = apply_convolution(matrix=noise_filtered, kernel=box_blur_7x7)
 
     # Generate mesh data
-    vertices = grid_to_xyz(noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
+    vertices = grid_to_xyz(
+        noise_filtered, start_coordinate=-6, end_coordinate=6).tolist()
     faces = generate_faces_from_grid(size, size)
 
     # Create mesh and object
@@ -681,7 +703,6 @@ if __name__ == '__main__':
     z_values = np.array([v[2] for v in vertices])
     z_min, z_max = z_values.min(), z_values.max()
 
-
     def lerp(a, b, t):
         return tuple(a[i] + (b[i] - a[i]) * t for i in range(4))
 
@@ -690,7 +711,7 @@ if __name__ == '__main__':
 
         # Define key color points (RGBA)
         white = (0.9, 0.9, 0.9, 1.0)
-        gray  = (0.3, 0.3, 0.3, 1.0)
+        gray = (0.3, 0.3, 0.3, 1.0)
         green = (0.196, 0.231, 0.011, 1.0)
         brown = (0.5, 0.37, 0.235, 1.0)
 
@@ -708,7 +729,6 @@ if __name__ == '__main__':
             return lerp(green, brown, t)
         else:
             return green  # fallback for any value below z_min
-
 
     # Assign colors to each face's loops
     for poly in perlin_mesh.polygons:
@@ -786,7 +806,8 @@ if __name__ == '__main__':
     img.interpolation = 'Smart'  # or 'Linear' / 'Closest'
     img.extension = 'REPEAT'  # use 'CLIP' to avoid tiling
 
-    img_path = bpy.path.abspath(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\stone_texture_granite.jpg")
+    img_path = bpy.path.abspath(
+        r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\stone_texture_granite.jpg")
     img.image = bpy.data.images.load(img_path)
 
     texcoord = nodes.new("ShaderNodeTexCoord")

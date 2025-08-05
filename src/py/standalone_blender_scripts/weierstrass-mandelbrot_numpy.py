@@ -66,17 +66,18 @@ def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
 
     for m in range(1, M + 1):
         theta_m = np.arctan2(y, x) - np.pi * m / M
-        phi_mn = np.random.uniform(0, 2 * np.pi, size=n_max + 1)  # random phase per n
+        phi_mn = np.random.uniform(
+            0, 2 * np.pi, size=n_max + 1)  # random phase per n
 
         for n in range(n_max + 1):
             gamma_n = gamma ** n
             r = np.sqrt(x ** 2 + y ** 2)
             term = (
-                    np.cos(phi_mn[n]) -
-                    np.cos(
-                        2 * np.pi * gamma_n * r / L *
-                        np.cos(theta_m) + phi_mn[n]
-                    )
+                np.cos(phi_mn[n]) -
+                np.cos(
+                    2 * np.pi * gamma_n * r / L *
+                    np.cos(theta_m) + phi_mn[n]
+                )
             )
             z += gamma ** ((D - 3) * n) * term
 
@@ -152,7 +153,7 @@ def generate_faces_from_grid(n_row, n_col):
 
 
 if __name__ == '__main__':  # example
-    
+
     size = 128
     res = 500
     random_seed = 123
@@ -173,9 +174,12 @@ if __name__ == '__main__':  # example
     n_max = 10
 
     # Compute WM surfaces
-    z1 = weierstrass_mandelbrot_3d(x=x, y=y, D=2.2,  G=1e-6, L=L, gamma=gamma, M=16, n_max=n_max)
-    z2 = weierstrass_mandelbrot_3d(x=x, y=y, D=2.45, G=8e-8, L=L, gamma=gamma, M=32, n_max=n_max)
-    z3 = weierstrass_mandelbrot_3d(x=x, y=y, D=2.45, G=1e-8, L=L, gamma=gamma, M=64, n_max=n_max)
+    z1 = weierstrass_mandelbrot_3d(
+        x=x, y=y, D=2.2,  G=1e-6, L=L, gamma=gamma, M=16, n_max=n_max)
+    z2 = weierstrass_mandelbrot_3d(
+        x=x, y=y, D=2.45, G=8e-8, L=L, gamma=gamma, M=32, n_max=n_max)
+    z3 = weierstrass_mandelbrot_3d(
+        x=x, y=y, D=2.45, G=1e-8, L=L, gamma=gamma, M=64, n_max=n_max)
 
     # Compute Hadamard product
     z = z1 * z2 * z3
@@ -199,10 +203,8 @@ if __name__ == '__main__':  # example
     z_values = np.array([v[2] for v in vertices])
     z_min, z_max = z_values.min(), z_values.max()
 
-
     def lerp(a, b, t):
         return tuple(a[i] + (b[i] - a[i]) * t for i in range(4))
-
 
     def height_to_color(z):
         norm_z = (z - z_min) / (z_max - z_min)
@@ -266,10 +268,10 @@ if __name__ == '__main__':  # example
     wm_terrain.data.materials.append(mat)
 
     # Plot
-    #"""
+    # """
     import matplotlib.pyplot as plt
 
     plt.imshow(z, cmap='gray', interpolation='lanczos')  # height map
     plt.colorbar()
     plt.show()
-    #"""
+    # """
