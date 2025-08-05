@@ -1,4 +1,4 @@
-### Procedural city/road generation  
+### Procedural Modeling of Cities
 <https://cgl.ethz.ch/Downloads/Publications/Papers/2001/p_Par01.pdf>  
 #### Can be useful for large-scale terrain realism
 - The paper demonstrates how a water map, an elevation map, and a population density map can be used as inputs to apply an L-system for generating a set of roads.  

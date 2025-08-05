@@ -19,7 +19,7 @@ if __name__ == '__main__':  # example
     n_max = 20
 
     # Compute WM surface
-    z = weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max)
+    z1 = weierstrass_mandelbrot_3d(x=x, y=y, D=D, G=G, L=L, gamma=gamma, M=16, n_max=n_max)
 
     # Plot
     fig = plt.figure(figsize=(10, 7))
