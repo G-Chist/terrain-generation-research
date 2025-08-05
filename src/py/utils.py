@@ -40,7 +40,8 @@ def apply_convolution(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]],
     assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
 
     kernel = kernel.astype(np.float32)
-    kernel /= kernel.sum() if kernel.sum() != 0 else 1  # normalize if not edge detector
+    # normalize if not edge detector
+    kernel /= kernel.sum() if kernel.sum() != 0 else 1
 
     k = kernel.shape[0] // 2  # padding size
 
@@ -75,8 +76,8 @@ def apply_sobel_magnitude(matrix):
 
     sobel_y = np.array([
         [-1, -2, -1],
-        [ 0,  0,  0],
-        [ 1,  2,  1]
+        [0,  0,  0],
+        [1,  2,  1]
     ], dtype=np.float32)
 
     gx = apply_convolution(matrix, sobel_x)
@@ -204,7 +205,7 @@ def generate_perlin_noise_2d(
     delta = (res[0] / shape[0], res[1] / shape[1])
     d = (shape[0] // res[0], shape[1] // res[1])
     grid = np.mgrid[0:res[0]:delta[0], 0:res[1]:delta[1]] \
-               .transpose(1, 2, 0) % 1
+        .transpose(1, 2, 0) % 1
     # Gradients
     angles = 2 * np.pi * np.random.rand(res[0] + 1, res[1] + 1)
     gradients = np.dstack((np.cos(angles), np.sin(angles)))
@@ -286,7 +287,8 @@ def generate_fractal_noise_2d(
     amplitude = 1
     for _ in range(octaves):
         noise += amplitude * generate_perlin_noise_2d(
-            shape, (frequency * res[0], frequency * res[1]), tileable, interpolant
+            shape, (frequency * res[0], frequency *
+                    res[1]), tileable, interpolant
         )
         frequency *= lacunarity
         amplitude *= persistence
@@ -390,19 +392,32 @@ def dig_path(
 
 
 def generate_terrain_noise(
-        size=1024,                         # size (int): Width and height of the terrain grid.
-        res=(8, 8),                        # res (tuple): Base resolution (periods) of the Perlin noise grid.
-        octaves=8,                         # octaves (int): Number of fractal noise layers to combine.
-        random_seed=123,                   # random_seed (int): Seed for NumPy random generator.
-        sea_level=0.5,                     # sea_level (float): Threshold below which terrain is considered 'sea'.
-        sky_level=1.0,                     # sky_level (float): Threshold above which terrain is flattened to sky level.
-        sea_roughness=0.3,                 # sea_roughness (float): Random fluctuation intensity added near sea level.
-        layers=0,                          # layers (int): Number of times to add the terrain to itself.
-        trend=None,                        # trend (np.ndarray): An optional trend to add to the surface.
-        terrace=False,                     # terrace (bool): Whether or not to apply terracing to the terrain.
-        terrace_steepness=11,              # terrace_steepness (int): Defines how steep terracing is.
-        terrace_frequency=10,              # terrace_frequency (int): Defines the level of detail for terracing.
-        kernels=None                       # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+        # size (int): Width and height of the terrain grid.
+        size=1024,
+        # res (tuple): Base resolution (periods) of the Perlin noise grid.
+        res=(8, 8),
+        # octaves (int): Number of fractal noise layers to combine.
+        octaves=8,
+        # random_seed (int): Seed for NumPy random generator.
+        random_seed=123,
+        # sea_level (float): Threshold below which terrain is considered 'sea'.
+        sea_level=0.5,
+        # sky_level (float): Threshold above which terrain is flattened to sky level.
+        sky_level=1.0,
+        # sea_roughness (float): Random fluctuation intensity added near sea level.
+        sea_roughness=0.3,
+        # layers (int): Number of times to add the terrain to itself.
+        layers=0,
+        # trend (np.ndarray): An optional trend to add to the surface.
+        trend=None,
+        # terrace (bool): Whether or not to apply terracing to the terrain.
+        terrace=False,
+        # terrace_steepness (int): Defines how steep terracing is.
+        terrace_steepness=11,
+        # terrace_frequency (int): Defines the level of detail for terracing.
+        terrace_frequency=10,
+        # kernels (np.ndarray): Optional sequence of convolution kernels to apply.
+        kernels=None
 ):
     """
     Generate filtered Perlin-based terrain noise with optional convolution kernels.
@@ -430,14 +445,17 @@ def generate_terrain_noise(
     np.random.seed(random_seed)
 
     # Generate fractal noise
-    noise = generate_fractal_noise_2d(shape=shape, res=res, tileable=(True, True), octaves=octaves)
+    noise = generate_fractal_noise_2d(
+        shape=shape, res=res, tileable=(True, True), octaves=octaves)
 
     # Normalize noise
-    noise_filtered = np.interp(noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
+    noise_filtered = np.interp(
+        noise, (noise.min(), noise.max()), (min_amplitude, max_amplitude))
     rand_range = (max_amplitude - min_amplitude) * 0.01
 
     # Clip to sky level
-    noise_filtered = np.where(noise_filtered < sky_level, noise_filtered, sky_level)
+    noise_filtered = np.where(
+        noise_filtered < sky_level, noise_filtered, sky_level)
 
     # Add randomness below sea level
     noise_filtered = np.where(
@@ -458,13 +476,15 @@ def generate_terrain_noise(
         noise_filtered += trend
 
     # Normalize again
-    noise_filtered = np.interp(noise_filtered, (noise_filtered.min(), noise_filtered.max()), (min_amplitude, max_amplitude))
+    noise_filtered = np.interp(noise_filtered, (noise_filtered.min(
+    ), noise_filtered.max()), (min_amplitude, max_amplitude))
 
     # Terrace the noise
     if terrace:
         freq = terrace_frequency
         step = np.round(noise_filtered * freq) / freq
-        noise_filtered = np.sin((noise_filtered - step) * 2.45) ** terrace_steepness + step
+        noise_filtered = np.sin((noise_filtered - step)
+                                * 2.45) ** terrace_steepness + step
 
     # Apply convolution kernel / kernels
     if kernels is None:
@@ -473,7 +493,8 @@ def generate_terrain_noise(
         kernels = [kernels]
 
     for kernel in kernels:
-        noise_filtered = apply_convolution(matrix=noise_filtered, kernel=kernel)
+        noise_filtered = apply_convolution(
+            matrix=noise_filtered, kernel=kernel)
 
     return noise_filtered
 
@@ -657,7 +678,7 @@ def count_features(feature_map):
         "footslope",  # 8
         "hollow"      # 9
     ]
-    
+
     return dict(zip(labels, counts))
 
 
@@ -691,17 +712,18 @@ def weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max):
 
     for m in range(1, M + 1):
         theta_m = np.arctan2(y, x) - np.pi * m / M
-        phi_mn = np.random.uniform(0, 2 * np.pi, size=n_max + 1)  # random phase per n
+        phi_mn = np.random.uniform(
+            0, 2 * np.pi, size=n_max + 1)  # random phase per n
 
         for n in range(n_max + 1):
             gamma_n = gamma ** n
             r = np.sqrt(x ** 2 + y ** 2)
             term = (
-                    np.cos(phi_mn[n]) -
-                    np.cos(
-                        2 * np.pi * gamma_n * r / L *
-                        np.cos(theta_m) + phi_mn[n]
-                    )
+                np.cos(phi_mn[n]) -
+                np.cos(
+                    2 * np.pi * gamma_n * r / L *
+                    np.cos(theta_m) + phi_mn[n]
+                )
             )
             z += gamma ** ((D - 3) * n) * term
 
@@ -737,7 +759,8 @@ def save_array_as_grayscale_png(array: np.ndarray, filepath: str) -> None:
     if max_val - min_val == 0:
         scaled = np.zeros_like(array, dtype=np.uint8)
     else:
-        scaled = ((array - min_val) / (max_val - min_val) * 255).astype(np.uint8)
+        scaled = ((array - min_val) / (max_val - min_val)
+                  * 255).astype(np.uint8)
 
     image = Image.fromarray(scaled, mode='L')
     image.save(filepath)
@@ -800,7 +823,8 @@ def load_elevation_grid(tif_file):
       represent the spatial location of each grid cell center.
     """
     with rasterio.open(tif_file) as src:
-        elevation = src.read(1).astype(np.float32)  # Read first band as float32
+        # Read first band as float32
+        elevation = src.read(1).astype(np.float32)
         nodata = src.nodata
         if nodata is not None:
             elevation[elevation == nodata] = np.nan  # Replace nodata with NaN
@@ -808,7 +832,8 @@ def load_elevation_grid(tif_file):
         rows, cols = elevation.shape
         x_pix, y_pix = np.meshgrid(np.arange(cols), np.arange(rows))
 
-        x_coords, y_coords = rasterio.transform.xy(src.transform, y_pix, x_pix, offset='center')
+        x_coords, y_coords = rasterio.transform.xy(
+            src.transform, y_pix, x_pix, offset='center')
         x_coords = np.array(x_coords).reshape(elevation.shape)
         y_coords = np.array(y_coords).reshape(elevation.shape)
 
@@ -973,10 +998,14 @@ if __name__ == "__main__":  # testing
     wm_noise = weierstrass_mandelbrot_3d(x, y, D, G, L, gamma, M, n_max)
     wm_features = feature_map(wm_noise)
 
-    print(f"Feature counts for Perlin Noise:         {count_features(noise_features)}")
-    print(f"Feature counts for Eroded Terrain:       {count_features(eroded_terrain_features)}")
-    print(f"Feature counts for Real Terrain:         {count_features(real_terrain_features)}")
-    print(f"Feature counts for W-M Fractal Terrain:  {count_features(wm_features)}")
+    print(
+        f"Feature counts for Perlin Noise:         {count_features(noise_features)}")
+    print(
+        f"Feature counts for Eroded Terrain:       {count_features(eroded_terrain_features)}")
+    print(
+        f"Feature counts for Real Terrain:         {count_features(real_terrain_features)}")
+    print(
+        f"Feature counts for W-M Fractal Terrain:  {count_features(wm_features)}")
 
     # Set up a 4x2 subplot
     fig, axs = plt.subplots(4, 2, figsize=(12, 13))
@@ -996,7 +1025,8 @@ if __name__ == "__main__":  # testing
     axs[1, 0].axis('off')
     fig.colorbar(axs[1, 0].images[0], ax=axs[1, 0])
 
-    axs[1, 1].imshow(real_terrain_features, cmap='gray', interpolation='lanczos')
+    axs[1, 1].imshow(real_terrain_features, cmap='gray',
+                     interpolation='lanczos')
     axs[1, 1].set_title("Real Terrain Feature Map")
     axs[1, 1].axis('off')
     fig.colorbar(axs[1, 1].images[0], ax=axs[1, 1])
@@ -1006,7 +1036,8 @@ if __name__ == "__main__":  # testing
     axs[2, 0].axis('off')
     fig.colorbar(axs[2, 0].images[0], ax=axs[2, 0])
 
-    axs[2, 1].imshow(eroded_terrain_features, cmap='gray', interpolation='lanczos')
+    axs[2, 1].imshow(eroded_terrain_features,
+                     cmap='gray', interpolation='lanczos')
     axs[2, 1].set_title("Erosion-Generated Terrain Feature Map")
     axs[2, 1].axis('off')
     fig.colorbar(axs[2, 1].images[0], ax=axs[2, 1])
@@ -1023,4 +1054,3 @@ if __name__ == "__main__":  # testing
 
     plt.tight_layout()
     plt.show()
-
