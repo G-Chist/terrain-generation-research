@@ -4,6 +4,7 @@ from typing import List, Tuple
 import os
 import imageio.v3 as iio
 from scipy.ndimage import generic_filter
+import rasterio
 from PIL import Image
 
 
@@ -769,6 +770,49 @@ def crop_grid_by_percent(grid, center_x_pct, center_y_pct, size):
     y_start = max(y_end - size, 0)
 
     return grid[x_start:x_end, y_start:y_end]
+
+
+def load_elevation_grid(tif_file):
+    """
+    Load elevation data from a GeoTIFF file as full-resolution NumPy grids.
+
+    Parameters
+    ----------
+    tif_file : str
+        File path to the input GeoTIFF (.tif) containing elevation data.
+
+    Returns
+    -------
+    elevation_grid : numpy.ndarray, shape (rows, cols)
+        2D array of elevation values (float), with no-data replaced by np.nan.
+
+    x_coords : numpy.ndarray, shape (rows, cols)
+        2D array of X spatial coordinates (e.g. longitude or easting) corresponding to each cell.
+
+    y_coords : numpy.ndarray, shape (rows, cols)
+        2D array of Y spatial coordinates (e.g. latitude or northing) corresponding to each cell.
+
+    Notes
+    -----
+    - The function preserves full resolution; no downsampling is performed.
+    - The coordinate arrays are computed using the GeoTIFF's affine transform and
+      represent the spatial location of each grid cell center.
+    """
+    with rasterio.open(tif_file) as src:
+        elevation = src.read(1).astype(np.float32)  # Read first band as float32
+        nodata = src.nodata
+        if nodata is not None:
+            elevation[elevation == nodata] = np.nan  # Replace nodata with NaN
+
+        rows, cols = elevation.shape
+        x_pix, y_pix = np.meshgrid(np.arange(cols), np.arange(rows))
+
+        x_coords, y_coords = rasterio.transform.xy(src.transform, y_pix, x_pix, offset='center')
+        x_coords = np.array(x_coords).reshape(elevation.shape)
+        y_coords = np.array(y_coords).reshape(elevation.shape)
+
+    return elevation, x_coords, y_coords
+
 
 
 # DIFFERENT USEFUL KERNEL EXAMPLES
