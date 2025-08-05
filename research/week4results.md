@@ -1,6 +1,7 @@
 ## Week 4 results
 
 - papers described, screenshots added
+- apparently WPI does not have ArcGIS
 ---
 - weierstrass-mandelbrot_numpy.py
   - converted to a standalone script
