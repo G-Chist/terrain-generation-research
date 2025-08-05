@@ -238,8 +238,8 @@ if __name__ == '__main__':  # example
     for poly in wm_mesh.polygons:
         for loop_idx in poly.loop_indices:
             vert_idx = wm_mesh.loops[loop_idx].vertex_index
-            z = vertices[vert_idx][2]
-            color_layer.data[loop_idx].color = height_to_color(z)
+            ze = vertices[vert_idx][2]
+            color_layer.data[loop_idx].color = height_to_color(ze)
 
     # Assign material that uses vertex color
     mat = bpy.data.materials.new(name="TerrainMaterial")
