@@ -192,11 +192,78 @@ if __name__ == '__main__':  # example
     wm_mesh.from_pydata(vertices, [], faces)
     wm_mesh.update()
 
+    # Add vertex colors
+    color_layer = wm_mesh.vertex_colors.new(name="Col")
+
+    # Normalize z values for color mapping
+    z_values = np.array([v[2] for v in vertices])
+    z_min, z_max = z_values.min(), z_values.max()
+
+
+    def lerp(a, b, t):
+        return tuple(a[i] + (b[i] - a[i]) * t for i in range(4))
+
+
+    def height_to_color(z):
+        norm_z = (z - z_min) / (z_max - z_min)
+
+        # Define key color points (RGBA)
+        white = (0.9, 0.9, 0.9, 1.0)
+        gray = (0.3, 0.3, 0.3, 1.0)
+        green = (0.196, 0.231, 0.011, 1.0)
+        brown = (0.5, 0.37, 0.235, 1.0)
+
+        if norm_z >= 0.4:
+            # White to Gray
+            t = (norm_z - 0.4) / 0.6
+            return lerp(gray, white, t)
+        elif norm_z >= 0.1:
+            # Gray to Brown
+            t = (norm_z - 0.1) / 0.3
+            return lerp(brown, gray, t)
+        elif norm_z >= 0.0:
+            # Brown to Green
+            t = norm_z / 0.1
+            return lerp(green, brown, t)
+        else:
+            return green  # fallback for any value below z_min
+
     # Create object and collection
     wm_terrain = bpy.data.objects.new("wm_terrain", wm_mesh)
     terrain_collection = bpy.data.collections.new("terrain_collection")
     bpy.context.scene.collection.children.link(terrain_collection)
     terrain_collection.objects.link(wm_terrain)
+
+    # Assign colors to each face's loops
+    for poly in wm_mesh.polygons:
+        for loop_idx in poly.loop_indices:
+            vert_idx = wm_mesh.loops[loop_idx].vertex_index
+            z = vertices[vert_idx][2]
+            color_layer.data[loop_idx].color = height_to_color(z)
+
+    # Assign material that uses vertex color
+    mat = bpy.data.materials.new(name="TerrainMaterial")
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+
+    # Clear default nodes
+    for node in nodes:
+        nodes.remove(node)
+
+    # Add new nodes
+    output_node = nodes.new(type='ShaderNodeOutputMaterial')
+    diffuse_node = nodes.new(type='ShaderNodeBsdfDiffuse')
+    vc_node = nodes.new(type='ShaderNodeVertexColor')
+    vc_node.layer_name = "Col"
+
+    # Connect nodes
+    links.new(vc_node.outputs['Color'], diffuse_node.inputs['Color'])
+    links.new(diffuse_node.outputs['BSDF'], output_node.inputs['Surface'])
+
+    # Assign material
+    wm_mesh.materials.append(mat)
+    wm_terrain.data.materials.append(mat)
 
     # Plot
     #"""
