@@ -7,5 +7,9 @@
   - converted to a standalone script
   - uses the Hadamard product to create a realistic rough terrain
 ---
+- weierstrass-mandelbrot_torch.py
+  - written using PyTorch
+  - much faster than the original script
+---
 - kriging_example.py
   - uses Ordinary Kriging (spherical) to refine a real-life terrain patch
