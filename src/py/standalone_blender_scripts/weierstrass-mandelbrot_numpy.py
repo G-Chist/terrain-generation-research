@@ -154,8 +154,8 @@ def generate_faces_from_grid(n_row, n_col):
 
 if __name__ == '__main__':  # example
 
-    size = 128
-    res = 500
+    size = 400
+    res = 2000
     random_seed = 123
 
     np.random.seed(random_seed)
@@ -188,7 +188,7 @@ if __name__ == '__main__':  # example
     z = np.interp(z, (z.min(), z.max()), (0, 1))
 
     # Generate mesh data
-    vertices = grid_to_xyz(z, start_coordinate=-6, end_coordinate=6).tolist()
+    vertices = grid_to_xyz(z, start_coordinate=-12, end_coordinate=12).tolist()
     faces = generate_faces_from_grid(res, res)
 
     # Create mesh and object
