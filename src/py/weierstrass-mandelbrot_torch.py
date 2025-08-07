@@ -53,7 +53,7 @@ def weierstrass_mandelbrot_3d_torch(x, y, D, G, L, gamma, M, n_max, device='cuda
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
 
-    size = 400
+    size = 600
     res = 2000
     random_seed = 123
 
@@ -87,6 +87,9 @@ if __name__ == "__main__":
 
     # Normalize to [0,1]
     z = np.interp(z, (z.min(), z.max()), (0, 1))
+
+    # Save as .npy
+    np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\wmterrain.npy", z)
 
     plt.imshow(z, cmap='gray', interpolation='lanczos')  # height map
     plt.colorbar()
