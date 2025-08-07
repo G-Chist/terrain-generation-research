@@ -9,7 +9,9 @@
 ---
 - weierstrass-mandelbrot_torch.py
   - written using PyTorch
+  - returns a .npy array file
   - much faster than the original script
+    - creating the terrain and loading it to Blender takes ~3 + ~10 seconds as opposed to ~40 seconds to create it using NumPy and turn it into a Blender mesh
 ---
 - kriging_example.py
   - uses Ordinary Kriging (spherical) to refine a real-life terrain patch
