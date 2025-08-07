@@ -1,3 +1,60 @@
+"""
+PLEASE READ THIS COMMENT BEFORE USING THE CODE!
+
+------------------------------------------------------
+Terrain Loader for Blender - NPY Grid Importer
+------------------------------------------------------
+
+This script imports a terrain mesh into Blender from a `.npy` file containing
+a 2D NumPy array of elevation values (z-coordinates). The array is assumed
+to represent a structured n×n grid where each entry corresponds to a single
+vertex in a digital elevation map (DEM). Using these values, the script
+automatically generates triangular faces to construct the full terrain mesh.
+
+Key Components:
+---------------
+1. NPY Grid Loader:
+   - Loads a `.npy` file containing a 2D NumPy array of floats (shape: n×n).
+   - Each entry in the array represents the z-height at grid coordinate (i, j).
+   - (x, y) coordinates are inferred from array indices.
+
+2. Face Generator:
+   - Assumes the height data is structured in a regular grid (row-major order).
+   - Creates two triangular faces for each quad cell in the grid.
+
+3. Mesh Builder:
+   - Uses Blender's Python API (`bpy`) to create a new mesh and object.
+   - Adds the object to a new `terrain_collection` in the active Blender scene.
+
+Modules Used:
+-------------
+- `numpy` for loading and processing the `.npy` elevation grid.
+- `bpy` for creating and linking Blender meshes and objects.
+- `os` for file validation.
+
+Usage Instructions:
+-------------------
+1. Save your elevation grid as a `.npy` file using NumPy:
+   Example:
+       ```python
+       import numpy as np
+       np.save("terrain.npy", elevation_array)
+       ```
+2. Update the `npy_path` variable in the `__main__` section to point to your `.npy` file.
+3. Run the script inside Blender's Scripting workspace:
+   - Open Blender.
+   - Go to the Scripting tab.
+   - Load this script.
+   - Click Run Script.
+4. The resulting mesh will appear in the scene in a collection called
+   `terrain_collection` under the name `npy_terrain`.
+
+Author:
+-------
+Matvei Shestopalov
+"""
+
+
 import numpy as np
 import bpy
 import os
@@ -46,10 +103,11 @@ if __name__ == "__main__":
 
     # Load heightmap from .npy
     z_grid = np.load(npy_path)  # shape (N, M)
+
     nrows, ncols = z_grid.shape
 
     # Convert to 3D vertices using helper function
-    vertices = grid_to_xyz(z_grid, start_coordinate=-1.0, end_coordinate=1.0)
+    vertices = grid_to_xyz(z_grid, start_coordinate=-12.0, end_coordinate=12.0)
 
     # Generate faces assuming row-major grid structure
     faces = generate_faces_from_grid(nrows, ncols)
