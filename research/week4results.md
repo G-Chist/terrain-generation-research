@@ -7,11 +7,16 @@
   - converted to a standalone script
   - uses the Hadamard product to create a realistic rough terrain
 ---
+- kriging_example.py
+  - uses PyKrige to ordinary krige an irl terrain
+  - corresponding util added
+---
+- open_and_plot_tif.py
+  - opens a .tif terrain file as a NumPy array
+  - corresponding util added
+---
 - weierstrass-mandelbrot_torch.py
   - written using PyTorch
   - returns a .npy array file
   - much faster than the original script
     - creating the terrain and loading it to Blender takes ~3 + ~10 seconds as opposed to ~40 seconds to create it using NumPy and turn it into a Blender mesh
----
-- kriging_example.py
-  - uses Ordinary Kriging (spherical) to refine a real-life terrain patch
