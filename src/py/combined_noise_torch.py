@@ -117,65 +117,125 @@ def generate_perlin_noise_2d_torch(shape, res, tileable=(False, False), interpol
     return torch.sqrt(torch.tensor(2.0, device=device)) * ((1 - t_y) * n0 + t_y * n1)
 
 
+import torch
+import numpy as np
+import math
+
+
+def generate_combined_noise(
+    res: int,
+    perlin_res=(4, 4),
+    scale_wm=600,
+    wm_layers=None,
+    trend=None,
+    alpha=0.5,
+    device='cuda'
+):
+    """
+    Generate combined Perlin + multi-layer WM noise with optional trend.
+
+    Args:
+        res: int, resolution (res x res grid).
+        perlin_res: tuple of ints, Perlin noise resolution.
+        scale_wm: int, W-M noise scale
+        wm_layers: list of dicts, each dict has WM layer params: D, G, L, gamma, M, n_max.
+        trend: ndarray of shape (res, res), trend to add.
+        alpha: float in [0,1], blending factor for Perlin noise.
+        device: 'cuda' or 'cpu'
+
+    Returns:
+        np.ndarray: Combined normalized noise array.
+    """
+    if wm_layers is None:
+        wm_layers = []
+
+    torch.manual_seed(0)
+    if device == 'cuda' and torch.cuda.is_available():
+        torch.cuda.manual_seed_all(0)
+
+    # === Meshgrid ===
+    x_vals = np.linspace(0, scale_wm, res)
+    y_vals = np.linspace(0, scale_wm, res)
+    x, y = np.meshgrid(x_vals, y_vals)
+
+    # === Generate WM Noise Product ===
+    z = np.ones_like(x)
+    for layer in wm_layers:
+        z_layer = weierstrass_mandelbrot_3d_torch(
+            x=x,
+            y=y,
+            D=layer['D'],
+            G=layer['G'],
+            L=layer['L'],
+            gamma=layer['gamma'],
+            M=layer['M'],
+            n_max=layer['n_max'],
+            device=device
+        )
+        z *= z_layer
+
+    # Normalize WM to [0, 1]
+    z = np.interp(z, (z.min(), z.max()), (0, 1))
+
+    # === Add trend ===
+    if trend is not None:
+        z += trend
+        z = np.interp(z, (z.min(), z.max()), (0, 1))
+
+    # === Generate Perlin Noise ===
+    perlin = generate_perlin_noise_2d_torch(
+        shape=(res, res),
+        res=perlin_res,
+        tileable=(True, True),
+        device=device
+    ).cpu().numpy()
+    perlin = np.interp(perlin, (perlin.min(), perlin.max()), (0, 1))
+
+    # === Blend Perlin and WM ===
+    combined = (1 - alpha) * z + alpha * perlin
+
+    return combined
+
+
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
-    size = 600
+    # === Parameters ===
     res = 2000
-    random_seed = 123
+    perlin_res = (4, 4)
+    scale_wm = 600
+    alpha = 0.5  # blending factor (can be negative)
 
-    torch.manual_seed(random_seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(random_seed)
-
-    # Create meshgrid
-    x_vals = np.linspace(0, size, res)
-    y_vals = np.linspace(0, size, res)
-    x, y = np.meshgrid(x_vals, y_vals)
-
-    # Example parameters
-    D = 2.5
-    G = 1e-1
-    L = 100.0
-    gamma = 1.5
-    M = 10
-    n_max = 10
-
-    perlin = generate_perlin_noise_2d_torch(
-        shape=(2000, 2000),
-        res=(4, 4),
-        tileable=(True, True),
-        device='cuda' if torch.cuda.is_available() else 'cpu'
-    )
-
-    # Compute WM surfaces
-    z1 = weierstrass_mandelbrot_3d_torch(
-        x=x, y=y, D=2.2, G=1e-6, L=L, gamma=gamma, M=16, n_max=n_max)
-    z2 = weierstrass_mandelbrot_3d_torch(
-        x=x, y=y, D=2.45, G=8e-8, L=L, gamma=gamma, M=32, n_max=n_max)
-    z3 = weierstrass_mandelbrot_3d_torch(
-        x=x, y=y, D=2.45, G=1e-8, L=L, gamma=gamma, M=64, n_max=n_max)
-
-    # Compute Hadamard product
-    z = z1 * z2 * z3
-
-    # DEFINE TREND
+    # === Trend ===
+    size = 600
     x_trend = torch.linspace(0, size, res)
     y_trend = torch.linspace(0, size, res)
     X_trend, Y_trend = torch.meshgrid(x_trend, y_trend, indexing='xy')
-    trend = (0.3 * torch.sin(X_trend * 4 / size)).cpu().numpy()
+    trend = (0.15 * torch.sin(X_trend * 4 / size)).cpu().numpy()
 
-    # Normalize to [0,1]
-    z = np.interp(z, (z.min(), z.max()), (0, 1))
+    # === WM Layers ===
+    wm_layers = [
+        {'D': 2.2, 'G': 1e-6, 'L': 100.0, 'gamma': 1.5, 'M': 16, 'n_max': 10},
+        {'D': 2.45, 'G': 8e-8, 'L': 100.0, 'gamma': 1.5, 'M': 32, 'n_max': 10},
+        {'D': 2.45, 'G': 1e-8, 'L': 100.0, 'gamma': 1.5, 'M': 64, 'n_max': 10},
+    ]
 
-    z += trend
+    noise = generate_combined_noise(
+        res=res,
+        scale_wm=scale_wm,
+        perlin_res=perlin_res,
+        wm_layers=wm_layers,
+        trend=trend,
+        alpha=alpha,
+        device='cuda' if torch.cuda.is_available() else 'cpu'
+    )
 
-    noise = z + perlin.cpu().numpy()
-
-    # Save as .npy
+    # === Save as .npy ===
     np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
 
+    # === Visualize ===
     plt.imshow(noise, cmap='gray')
     plt.colorbar()
-    plt.title("Perlin + W-M Noise (Torch Accelerated)")
+    plt.title("Combined WM + Perlin Noise")
     plt.show()
+
