@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     noise = generate_perlin_noise_2d_torch(
         shape=(2000, 2000),
-        res=(8, 8),
+        res=(4, 4),
         tileable=(True, True),
         device='cuda' if torch.cuda.is_available() else 'cpu'
     )
