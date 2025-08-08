@@ -85,8 +85,16 @@ if __name__ == "__main__":
     # Compute Hadamard product
     z = z1 * z2 * z3
 
+    # DEFINE TREND
+    x_trend = torch.linspace(0, size, res)
+    y_trend = torch.linspace(0, size, res)
+    X_trend, Y_trend = torch.meshgrid(x_trend, y_trend, indexing='xy')
+    trend = (0.3 * torch.sin(X_trend*4/size)).cpu().numpy()
+
     # Normalize to [0,1]
     z = np.interp(z, (z.min(), z.max()), (0, 1))
+
+    z += trend
 
     # Save as .npy
     np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\wmterrain.npy", z)
