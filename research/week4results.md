@@ -20,3 +20,8 @@
   - returns a .npy array file
   - much faster than the original script
     - creating the terrain and loading it to Blender takes ~3 + ~10 seconds as opposed to ~40 seconds to create it using NumPy and turn it into a Blender mesh
+---
+- combined_noise_torch.py
+  - combines Perlin noise and W-M noise using PyTorch
+  - fast
+  - naturally generates pits and obstacles
