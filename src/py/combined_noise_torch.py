@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # === Parameters ===
     res = 2000
     perlin_res = (5, 5)
-    scale_wm = 50
+    scale_wm = 30
     alpha = 0.3  # blending factor, describes the magnitude of Perlin Noise (can be negative)
     seed = 1738
 
@@ -224,7 +224,7 @@ if __name__ == '__main__':
     # === WM Layers ===
     wm_layers = [
         {'D': 2.2, 'G': 1e-6, 'L': 100.0, 'gamma': 1.5, 'M': 16, 'n_max': 10},
-        {'D': 2.45, 'G': 8e-8, 'L': 100.0, 'gamma': 1.5, 'M': 32, 'n_max': 10},
+        {'D': 2.55, 'G': 8e-8, 'L': 100.0, 'gamma': 1.5, 'M': 32, 'n_max': 10},
         {'D': 2.45, 'G': 1e-8, 'L': 100.0, 'gamma': 1.5, 'M': 64, 'n_max': 10},
     ]
 
