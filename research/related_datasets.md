@@ -2,3 +2,5 @@
   - elevation datasets and more
 - https://www.kaggle.com/datasets/tpapp157/earth-terrain-height-and-segmentation-map-images
   - Earth height map images
+- https://portal.opentopography.org/datasetMetadata?otCollectionID=OT.062025.2193.2
+  - LiDAR point clouds, 19.07 pts/m2, 3,507.2 km2
