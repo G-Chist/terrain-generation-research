@@ -107,7 +107,7 @@ if __name__ == "__main__":
     nrows, ncols = z_grid.shape
 
     # Convert to 3D vertices using helper function
-    vertices = grid_to_xyz(z_grid, start_coordinate=-12.0, end_coordinate=12.0)
+    vertices = grid_to_xyz(z_grid, start_coordinate=-6.0, end_coordinate=6.0)
 
     # Generate faces assuming row-major grid structure
     faces = generate_faces_from_grid(nrows, ncols)

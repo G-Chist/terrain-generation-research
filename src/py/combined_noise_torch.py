@@ -194,19 +194,20 @@ def generate_combined_noise(
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
 
     # === Parameters ===
     res = 2000
     perlin_res = (4, 4)
-    scale_wm = 600
-    alpha = 0.5  # blending factor (can be negative)
+    scale_wm = 100
+    alpha = 0.1  # blending factor (can be negative)
 
     # === Trend ===
     size = 600
     x_trend = torch.linspace(0, size, res)
     y_trend = torch.linspace(0, size, res)
     X_trend, Y_trend = torch.meshgrid(x_trend, y_trend, indexing='xy')
-    trend = (0.15 * torch.sin(X_trend * 4 / size)).cpu().numpy()
+    trend = (0.3 * torch.sin(X_trend * 4 / size)).cpu().numpy()
 
     # === WM Layers ===
     wm_layers = [
@@ -228,9 +229,26 @@ if __name__ == '__main__':
     # === Save as .npy ===
     np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
 
-    # === Visualize ===
+    # === 2D visualization ===
     plt.imshow(noise, cmap='gray')
     plt.colorbar()
-    plt.title("Combined WM + Perlin Noise")
+    plt.title("Combined WM + Perlin Noise (2D)")
     plt.show()
+
+    # === 3D visualization ===
+    fig = plt.figure(figsize=(10, 7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Reduce resolution for faster rendering
+    step = res // 200  # downsample factor
+    X, Y = np.meshgrid(np.arange(0, res, step), np.arange(0, res, step))
+    Z = noise[::step, ::step]
+
+    ax.plot_surface(X, Y, Z, cmap='terrain', linewidth=0, antialiased=True)
+    ax.set_title("3D Terrain Surface")
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Height")
+    plt.show()
+
 
