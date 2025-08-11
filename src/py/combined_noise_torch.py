@@ -130,6 +130,7 @@ def generate_combined_noise(
     res: int,
     perlin_res=(4, 4),
     scale_wm=600,
+    wm_mag=0.1,
     wm_layers=None,
     trend=None,
     alpha=0.5,
@@ -142,6 +143,7 @@ def generate_combined_noise(
         res: int, resolution (res x res grid).
         perlin_res: tuple of ints, Perlin noise resolution.
         scale_wm: int, W-M noise scale
+        wm_mag: float, magnitude of W-M noise
         wm_layers: list of dicts, each dict has WM layer params: D, G, L, gamma, M, n_max.
         trend: ndarray of shape (res, res), trend to add.
         alpha: float in [0,1], blending factor for Perlin noise.
@@ -159,8 +161,8 @@ def generate_combined_noise(
     y_vals = np.linspace(0, scale_wm, res)
     x, y = np.meshgrid(x_vals, y_vals)
 
-    # === Generate WM Noise Product ===
-    z = np.ones_like(x)
+    # === Generate WM Noise ===
+    z = np.zeros_like(x)
     for layer in wm_layers:
         z_layer = weierstrass_mandelbrot_3d_torch(
             x=x,
@@ -173,15 +175,15 @@ def generate_combined_noise(
             n_max=layer['n_max'],
             device=device
         )
-        z *= z_layer
+        z += z_layer
 
-    # Normalize WM to [0, 1]
-    z = np.interp(z, (z.min(), z.max()), (-1, 1))
+    # Normalize WM
+    z = np.interp(z, (z.min(), z.max()), (-wm_mag, wm_mag))
 
     # === Add trend ===
     if trend is not None:
         z += trend
-        z = np.interp(z, (z.min(), z.max()), (-1, 1))
+        z = np.interp(z, (z.min(), z.max()), (-wm_mag, wm_mag))
 
     # === Generate Perlin Noise ===
     perlin = generate_perlin_noise_2d_torch(
@@ -194,9 +196,6 @@ def generate_combined_noise(
 
     # === Blend Perlin and WM ===
     combined = (1 - alpha) * z + alpha * perlin
-    
-    # Normalize the result
-    combined = np.interp(combined, (combined.min(), combined.max()), (-1, 1))
 
     return combined
 
@@ -206,11 +205,12 @@ if __name__ == '__main__':
     from mpl_toolkits.mplot3d import Axes3D
 
     # === Parameters ===
-    res = 3000
-    perlin_res = (10, 10)
+    res = 2000
+    perlin_res = (5, 5)
     scale_wm = 2000
-    alpha = 0.05  # blending factor, describes the magnitude of Perlin Noise
+    alpha = 0.2  # blending factor, describes the magnitude of Perlin Noise
     seed = 1738
+    wm_mag = 0.3
 
     gen = torch.Generator(device='cuda' if torch.cuda.is_available() else 'cpu').manual_seed(seed)  # seed random
 
@@ -219,7 +219,7 @@ if __name__ == '__main__':
     x_trend = torch.linspace(0, size, res)
     y_trend = torch.linspace(0, size, res)
     X_trend, Y_trend = torch.meshgrid(x_trend, y_trend, indexing='xy')
-    trend = (0.1 * torch.sin(X_trend * 4 / size)).cpu().numpy()
+    trend = (0.0 * torch.sin(X_trend * 2 / size)).cpu().numpy()
 
     # === WM Layers ===
     wm_layers = [
@@ -232,6 +232,7 @@ if __name__ == '__main__':
     noise = generate_combined_noise(
         res=res,
         scale_wm=scale_wm,
+        wm_mag=wm_mag,
         perlin_res=perlin_res,
         wm_layers=wm_layers,
         trend=trend,
@@ -253,15 +254,17 @@ if __name__ == '__main__':
     ax = fig.add_subplot(111, projection='3d')
 
     # Reduce resolution for faster rendering
-    step = res // 200  # downsample factor
+    step = res // 50  # downsample factor
     X, Y = np.meshgrid(np.arange(0, res, step), np.arange(0, res, step))
     Z = noise[::step, ::step]
 
-    ax.plot_surface(X, Y, Z, cmap='terrain', linewidth=0, antialiased=True)
+    ax.plot_surface(X/4, Y/4, Z*90, cmap='terrain', linewidth=0, antialiased=True)
     ax.set_title("3D Terrain Surface")
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("Height")
+
+    ax.set_box_aspect((np.ptp(X/4), np.ptp(Y/4), np.ptp(Z*90)))  # aspect ratio is 1:1:1
     plt.show()
 
 
