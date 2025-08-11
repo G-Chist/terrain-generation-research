@@ -208,9 +208,9 @@ if __name__ == '__main__':
     res = 2000
     perlin_res = (5, 5)
     scale_wm = 4000
-    alpha = 0.3  # blending factor, describes the magnitude of Perlin Noise
+    alpha = 0.1  # blending factor, describes the magnitude of Perlin Noise
     seed = 1738
-    wm_mag = 0.1
+    wm_mag = 0.012
 
     gen = torch.Generator(device='cuda' if torch.cuda.is_available() else 'cpu').manual_seed(seed)  # seed random
 
