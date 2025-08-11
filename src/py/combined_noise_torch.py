@@ -190,10 +190,13 @@ def generate_combined_noise(
         tileable=(True, True),
         device=device
     ).cpu().numpy()
-    perlin = np.interp(perlin, (perlin.min(), perlin.max()), (0, 1))
+    perlin = np.interp(perlin, (perlin.min(), perlin.max()), (-1, 1))
 
     # === Blend Perlin and WM ===
     combined = (1 - alpha) * z + alpha * perlin
+    
+    # Normalize the result
+    combined = np.interp(combined, (combined.min(), combined.max()), (-1, 1))
 
     return combined
 
@@ -204,19 +207,19 @@ if __name__ == '__main__':
 
     # === Parameters ===
     res = 2000
-    perlin_res = (20, 20)
+    perlin_res = (5, 5)
     scale_wm = 50
-    alpha = 0.3  # blending factor, describes the magnitude of Perlin Noise (can be negative)
+    alpha = 0.5  # blending factor, describes the magnitude of Perlin Noise (can be negative)
     seed = 1738
 
     gen = torch.Generator(device='cuda' if torch.cuda.is_available() else 'cpu').manual_seed(seed)  # seed random
 
     # === Trend ===
-    size = 600
+    size = res
     x_trend = torch.linspace(0, size, res)
     y_trend = torch.linspace(0, size, res)
     X_trend, Y_trend = torch.meshgrid(x_trend, y_trend, indexing='xy')
-    trend = (0.3 * torch.sin(X_trend * 4 / size)).cpu().numpy()
+    trend = (0.1 * torch.sin(X_trend * 4 / size)).cpu().numpy()
 
     # === WM Layers ===
     wm_layers = [
