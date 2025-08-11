@@ -1,3 +1,12 @@
+"""
+Generates a terrain heightmap by blending Perlin noise, multiple Weierstrass–Mandelbrot layers,
+and an optional trend. Saves output as .npy and visualizes in 2D/3D.
+
+- Adjustable params: resolution, Perlin scale, WM layers, trend, blending alpha.
+- Uses GPU (CUDA) if available.
+- Output: NumPy array (heightmap).
+"""
+
 import torch
 import math
 import numpy as np
@@ -38,7 +47,7 @@ def weierstrass_mandelbrot_3d_torch(x, y, D, G, L, gamma, M, n_max, device='cuda
     r = torch.sqrt(x ** 2 + y ** 2)
     for m in range(1, M + 1):
         theta_m = torch.atan2(y, x) - torch.pi * m / M
-        phi_mn = torch.rand(n_max + 1, device=device) * 2 * torch.pi
+        phi_mn = torch.rand(n_max + 1, device=device, generator=gen) * 2 * torch.pi
 
         for n in range(n_max + 1):
             gamma_n = gamma ** n
@@ -84,7 +93,7 @@ def generate_perlin_noise_2d_torch(shape, res, tileable=(False, False), interpol
     grid = torch.stack((grid_x, grid_y), dim=-1)
 
     # Generate random gradients
-    angles = 2 * math.pi * torch.rand(res[0] + 1, res[1] + 1, device=device)
+    angles = 2 * math.pi * torch.rand(res[0] + 1, res[1] + 1, device=device, generator=gen)
     gradients = torch.stack((torch.cos(angles), torch.sin(angles)), dim=-1)
 
     if tileable[0]:
@@ -137,16 +146,13 @@ def generate_combined_noise(
         trend: ndarray of shape (res, res), trend to add.
         alpha: float in [0,1], blending factor for Perlin noise.
         device: 'cuda' or 'cpu'
-
     Returns:
         np.ndarray: Combined normalized noise array.
     """
+
+
     if wm_layers is None:
         wm_layers = []
-
-    torch.manual_seed(0)
-    if device == 'cuda' and torch.cuda.is_available():
-        torch.cuda.manual_seed_all(0)
 
     # === Meshgrid ===
     x_vals = np.linspace(0, scale_wm, res)
@@ -199,8 +205,11 @@ if __name__ == '__main__':
     # === Parameters ===
     res = 2000
     perlin_res = (4, 4)
-    scale_wm = 100
+    scale_wm = 50
     alpha = 0.1  # blending factor (can be negative)
+    seed = 1738
+
+    gen = torch.Generator(device='cuda' if torch.cuda.is_available() else 'cpu').manual_seed(seed)  # seed random
 
     # === Trend ===
     size = 600
