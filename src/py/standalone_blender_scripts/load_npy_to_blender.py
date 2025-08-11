@@ -60,11 +60,13 @@ import bpy
 import os
 
 
-def grid_to_xyz(z_grid, start_coordinate, end_coordinate):
+def grid_to_xyz(z_grid, start_coordinate, end_coordinate, scale=1):
     """
     Convert a 2D grid of z-values into a (N*M)x3 array of [x, y, z] coordinates,
     where x and y are linearly spaced between start_coordinate and end_coordinate.
+    Optionally scales the grid by a given value.
     """
+    z_grid *= scale
     nrows, ncols = z_grid.shape
     x = np.linspace(start_coordinate, end_coordinate, ncols)
     y = np.linspace(start_coordinate, end_coordinate, nrows)
@@ -107,7 +109,7 @@ if __name__ == "__main__":
     nrows, ncols = z_grid.shape
 
     # Convert to 3D vertices using helper function
-    vertices = grid_to_xyz(z_grid, start_coordinate=-6.0, end_coordinate=6.0)
+    vertices = grid_to_xyz(z_grid, start_coordinate=0.0, end_coordinate=500.0, scale=90)
 
     # Generate faces assuming row-major grid structure
     faces = generate_faces_from_grid(nrows, ncols)
