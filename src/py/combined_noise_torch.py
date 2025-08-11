@@ -176,12 +176,12 @@ def generate_combined_noise(
         z *= z_layer
 
     # Normalize WM to [0, 1]
-    z = np.interp(z, (z.min(), z.max()), (0, 1))
+    z = np.interp(z, (z.min(), z.max()), (-1, 1))
 
     # === Add trend ===
     if trend is not None:
         z += trend
-        z = np.interp(z, (z.min(), z.max()), (0, 1))
+        z = np.interp(z, (z.min(), z.max()), (-1, 1))
 
     # === Generate Perlin Noise ===
     perlin = generate_perlin_noise_2d_torch(
