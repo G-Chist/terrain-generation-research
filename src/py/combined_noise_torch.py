@@ -117,11 +117,6 @@ def generate_perlin_noise_2d_torch(shape, res, tileable=(False, False), interpol
     return torch.sqrt(torch.tensor(2.0, device=device)) * ((1 - t_y) * n0 + t_y * n1)
 
 
-import torch
-import numpy as np
-import math
-
-
 def generate_combined_noise(
     res: int,
     perlin_res=(4, 4),
