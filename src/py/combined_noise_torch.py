@@ -233,9 +233,9 @@ if __name__ == '__main__':
     res = 2000
     perlin_res = (5, 5)
     scale_wm = 4000
-    alpha = 0.1  # blending factor, describes the magnitude of Perlin Noise
+    alpha = 0.05  # blending factor, describes the magnitude of Perlin Noise
     seed = 1738
-    wm_mag = 0.012
+    wm_mag = 0.03
 
     gen = torch.Generator(device='cuda' if torch.cuda.is_available() else 'cpu').manual_seed(seed)  # seed random
 
@@ -248,10 +248,10 @@ if __name__ == '__main__':
 
     # === WM Layers ===
     wm_layers = [
-        {'D': 2.0, 'G': 1e-7, 'L': 100.0, 'gamma': 1.5, 'M': 8, 'n_max': 10},
+        {'D': 2.0, 'G': 1e-7, 'L': 30.0, 'gamma': 1.5, 'M': 8, 'n_max': 10},
         {'D': 2.55, 'G': 8e-8, 'L': 80.0, 'gamma': 3.5, 'M': 32, 'n_max': 10},
-        {'D': 2.45, 'G': 1e-8, 'L': 55.0, 'gamma': 2.5, 'M': 64, 'n_max': 10},
-        {'D': 3.25, 'G': 1e-8, 'L': 40.0, 'gamma': 8.5, 'M': 256, 'n_max': 10},
+        {'D': 2.45, 'G': 1e-8, 'L': 35.0, 'gamma': 2.5, 'M': 64, 'n_max': 10},
+        {'D': 3.25, 'G': 1e-8, 'L': 20.0, 'gamma': 8.5, 'M': 256, 'n_max': 10},
     ]
 
     noise = generate_combined_noise(
@@ -265,7 +265,7 @@ if __name__ == '__main__':
         device='cuda' if torch.cuda.is_available() else 'cpu'
     )
 
-    noise = apply_convolution_torch(noise, box_blur_7x7)
+    noise = apply_convolution_torch(noise, box_blur_11x11)  # smoothen
 
     # === Save as .npy ===
     try:
