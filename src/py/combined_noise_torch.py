@@ -9,7 +9,32 @@ and an optional trend. Saves output as .npy and visualizes in 2D/3D.
 
 import torch
 import math
+import torch.nn.functional as F
 import numpy as np
+from utils import apply_convolution, box_blur_3x3, box_blur_7x7, box_blur_11x11, gaussian_kernel_3x3, gaussian_kernel_5x5
+
+
+def apply_convolution_torch(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
+    assert kernel.ndim == 2 and kernel.shape[0] == kernel.shape[1], "Kernel must be square"
+    assert kernel.shape[0] % 2 == 1, "Kernel size must be odd"
+
+    kernel = kernel.astype(np.float32)
+    kernel_sum = kernel.sum()
+    if kernel_sum != 0:
+        kernel = kernel / kernel_sum
+
+    k = kernel.shape[0] // 2  # padding size
+
+    # Convert inputs to torch tensors with dtype float32
+    input_tensor = torch.from_numpy(matrix.astype(np.float32)).unsqueeze(0).unsqueeze(0)
+    kernel_tensor = torch.from_numpy(kernel).unsqueeze(0).unsqueeze(0)
+
+    # Pad with 'replicate' mode (edge padding)
+    padded_input = F.pad(input_tensor, (k, k, k, k), mode='replicate')
+
+    output_tensor = F.conv2d(padded_input, kernel_tensor)
+
+    return output_tensor.squeeze(0).squeeze(0).numpy()
 
 
 def weierstrass_mandelbrot_3d_torch(x, y, D, G, L, gamma, M, n_max, device='cuda'):
@@ -240,8 +265,13 @@ if __name__ == '__main__':
         device='cuda' if torch.cuda.is_available() else 'cpu'
     )
 
+    noise = apply_convolution_torch(noise, box_blur_7x7)
+
     # === Save as .npy ===
-    np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
+    try:
+        np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
+    except FileNotFoundError:  # if I am on lab PC...
+        np.save(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
 
     # === 2D visualization ===
     plt.imshow(noise, cmap='gray')
