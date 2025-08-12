@@ -1,1 +1,2 @@
 - generate a 500m^2 or 1km^2 terrain, ~3 points per 20cm max
+- subdivide existing terrain to make it smoother
