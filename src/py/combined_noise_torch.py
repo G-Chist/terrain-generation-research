@@ -231,7 +231,7 @@ if __name__ == '__main__':
     from mpl_toolkits.mplot3d import Axes3D
 
     # === Parameters ===
-    res = 2000
+    res = 3000
     perlin_res = (5, 5)
     scale_wm = 4000
     alpha = 0.05  # blending factor, describes the magnitude of Perlin Noise
