@@ -11,7 +11,7 @@ import torch
 import math
 import torch.nn.functional as F
 import numpy as np
-from utils import apply_convolution, box_blur_3x3, box_blur_7x7, box_blur_11x11, gaussian_kernel_3x3, gaussian_kernel_5x5
+from utils import apply_convolution, box_blur_3x3, box_blur_7x7, box_blur_11x11, gaussian_kernel_3x3, gaussian_kernel_5x5, save_array_as_grayscale_png
 
 
 def apply_convolution_torch(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -267,11 +267,15 @@ if __name__ == '__main__':
 
     noise = apply_convolution_torch(noise, box_blur_11x11)  # smoothen
 
-    # === Save as .npy ===
+    # === Save as .npy and .png for Blender and UE ===
     try:
         np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
+        save_array_as_grayscale_png(noise, r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_noise.png")
+
     except FileNotFoundError:  # if I am on lab PC...
         np.save(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
+        save_array_as_grayscale_png(noise,
+                                    r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_noise.png")
 
     # === 2D visualization ===
     plt.imshow(noise, cmap='gray')
