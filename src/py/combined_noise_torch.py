@@ -11,7 +11,8 @@ import torch
 import math
 import torch.nn.functional as F
 import numpy as np
-from utils import apply_convolution, box_blur_3x3, box_blur_7x7, box_blur_11x11, gaussian_kernel_3x3, gaussian_kernel_5x5, save_array_as_grayscale_png
+
+from utils import apply_convolution, box_blur_3x3, box_blur_7x7, box_blur_11x11, gaussian_kernel_3x3, gaussian_kernel_5x5, save_array_as_grayscale_png, save_array_as_grayscale_png_16bit
 
 
 def apply_convolution_torch(matrix, kernel=np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]], dtype=np.float32)):
@@ -271,11 +272,15 @@ if __name__ == '__main__':
     try:
         np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
         save_array_as_grayscale_png(noise, r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_noise.png")
+        save_array_as_grayscale_png_16bit(noise,
+                                    r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_noise16.png")
 
     except FileNotFoundError:  # if I am on lab PC...
         np.save(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy", noise)
         save_array_as_grayscale_png(noise,
                                     r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_noise.png")
+        save_array_as_grayscale_png_16bit(noise,
+                                    r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_noise16.png")
 
     # === 2D visualization ===
     plt.imshow(noise, cmap='gray')

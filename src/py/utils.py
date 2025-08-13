@@ -766,6 +766,33 @@ def save_array_as_grayscale_png(array: np.ndarray, filepath: str) -> None:
     image.save(filepath)
 
 
+def save_array_as_grayscale_png_16bit(array: np.ndarray, filepath: str) -> None:
+    """
+    Save a 2D NumPy array as a 32-bit grayscale PNG image.
+
+    Parameters:
+    -----------
+    array : np.ndarray
+        A 2D NumPy array of float or integer values. Stored as 16-bit per channel.
+
+    filepath : str
+        Path where the PNG image will be saved (should end in .png).
+    """
+    if array.ndim != 2:
+        raise ValueError("Input array must be 2D")
+
+    min_val = array.min()
+    max_val = array.max()
+
+    if max_val - min_val == 0:
+        scaled = np.zeros_like(array, dtype=np.uint16)
+    else:
+        scaled = ((array - min_val) / (max_val - min_val) * 65535).astype(np.uint16)
+
+    image = Image.fromarray(scaled, mode='I;16')
+    image.save(filepath)
+
+
 def crop_grid_by_percent(grid, center_x_pct, center_y_pct, size):
     """
     Crops an n x n square from a 2D grid using percent-based center coordinates.
