@@ -1,2 +1,3 @@
 - generate a 500m^2 or 1km^2 terrain, ~3 points per 20cm max
 - subdivide existing terrain to make it smoother
+- pixel-by-pixel GANs can't create a nicely scalable terrain, maybe it can be fruitful to evolve an L-system with a GA using Annoy proximity to one of the terrains as a fitness function
