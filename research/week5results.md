@@ -5,3 +5,8 @@
   - 3D visualization added
   - exports as .png
   - bug fixes
+---
+- TerrainGAN.py
+  - uses the Kaggle elevation dataset (6000 images) for training
+  - questionable data selection
+  - some limited results

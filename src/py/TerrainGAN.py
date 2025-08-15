@@ -12,12 +12,12 @@ from matplotlib.pyplot import imshow, imsave
 #%%
 MODEL_NAME = 'TerrainGAN'
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DATA_PATH = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\archive\_dataset"
+DATA_PATH = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\processed_dataset"
 BATCH_SIZE = 64
-IMAGE_SIZE = 56  # size of sample to crop out
+IMAGE_SIZE = 128
 N_NOISE = 100
 MAX_EPOCH = 50
-N_CRITIC = 1  # discriminator steps per generator step
+N_CRITIC = 2  # discriminator steps per generator step
 
 print(DEVICE)
 
@@ -33,6 +33,7 @@ def get_sample_image(G, n_noise):
 
 #%%
 class TerrainDataset(Dataset):
+
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
@@ -44,15 +45,6 @@ class TerrainDataset(Dataset):
     def __getitem__(self, idx):
         img_path = os.path.join(self.root_dir, self.img_files[idx])
         image = Image.open(img_path).convert("L")
-
-        # Compute coordinates for center crop
-        width, height = image.size
-        left = (width - IMAGE_SIZE) // 2
-        top = (height - IMAGE_SIZE) // 2
-        right = left + IMAGE_SIZE
-        bottom = top + IMAGE_SIZE
-        image = image.crop((left, top, right, bottom))
-
         if self.transform:
             image = self.transform(image)
         return image
