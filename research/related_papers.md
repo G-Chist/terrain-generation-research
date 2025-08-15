@@ -156,4 +156,34 @@
   - There may be certain speeds at which the rotation rates are higher than expected, based on the resonant behaviour of the vehicle’s suspension.
   - The 3D Weierstrass-Mandelbrot fractal function is an effective way of generating a terrain surface which can be used for vehicle simulations.
   - The surfaces generated can be evaluated using well defined terrain characterisation metrics such as the RMSE, PSD, and IRI. It was observed that both the RMSE and IRI increase exponentially for surfaces with increasing scaling coefficient (G).
+---
+### A step towards procedural terrain generation with GANs  
+<https://arxiv.org/abs/1707.03383>  
+#### Can be useful for data-driven terrain generation from real-world imagery
+- Proposes a two-stage GAN pipeline for generating terrain heightmaps and corresponding texture maps from satellite data.
+- Stage 1: DCGAN generates a 512×512 px heightmap from random latent vector `z`.
+  - Input: random vector from prior distribution.
+  - Output: grayscale heightmap (1 km/pixel resolution).
+  - Loss: LSGAN objective for stability.
+  - Artifacts can be reduced with Gaussian blur.
+  - ![Generated heightmaps and interpolations](images/p8i1.png)
+- Stage 2: Pix2pix GAN generates texture maps conditioned on generated heightmaps.
+  - Input: generated heightmap from Stage 1.
+  - Output: RGB texture map.
+  - Loss: LSGAN + L1 reconstruction loss (λ = 100).
+  - Discriminator takes heightmap–texture pairs.
+  - Matching texture to heightmap can be challenging if dataset contains many biomes; mitigated by filtering to a single biome (desert) via Euclidean distance to reference texture.
+  - ![Heightmap-to-texture translations](images/p8i2.png)
+- Dataset preparation:
+  - Source: NASA Visible Earth 21600×10800 px heightmap and texture maps.
+  - Extracted 512×512 patches with <90% black pixels.
+  - Biome filtering to ensure consistent texture–height relationships.
+- Results:
+  - Generated heightmaps broadly resemble real terrain but may have small-scale artifacts.
+  - Textures generally align with height features, but some mismatches occur (e.g., snow in deserts) due to separate training of GAN stages.
+  - Example Unity renderings show plausible terrain with minor smoothing.
+- Limitations & future work:
+  - Joint training of DCGAN and pix2pix could improve coherence.
+  - Adding biome segmentation ("splatmaps") could enable richer procedural detailing in game engines.
+  - Framework adaptable to other procedural generation domains (e.g., 3D meshes).
 
