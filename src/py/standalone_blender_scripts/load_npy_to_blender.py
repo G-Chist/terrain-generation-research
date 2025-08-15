@@ -101,7 +101,7 @@ if __name__ == "__main__":
     npy_path = r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy"
 
     if not os.path.isfile(npy_path):  # if I am on lab PC...
-        npy_path = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy"
+        npy_path = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy"
         # raise FileNotFoundError(f".npy file not found at: {npy_path}")
 
     if not os.path.isfile(npy_path):  # actual error
