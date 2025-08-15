@@ -555,6 +555,10 @@ def load_bw_image_as_normalized_array(filepath):
 
     img = iio.imread(filepath)
 
+    # Average across channels if necessary
+    if img.ndim == 3:
+        img = img.mean(axis=-1)
+
     # Convert to float32 for normalization
     arr = img.astype(np.float32)
     min_val = arr.min()

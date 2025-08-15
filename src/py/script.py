@@ -36,4 +36,15 @@ if __name__ == "__main__":
 
     # """
 
+    # crop to minimum dimension
+    min_dim = min(terrain.shape)
+    terrain = terrain[:min_dim, :min_dim]
+
     np.save(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy", terrain)
+
+    # CHECKS
+    terrain_loaded = np.load(
+        r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy")
+    print("Shape:", terrain_loaded.shape)
+    print("Min:", terrain_loaded.min(), "Max:", terrain_loaded.max())
+
