@@ -8,5 +8,5 @@
 ---
 - TerrainGAN.py
   - uses the Kaggle elevation dataset (6000 images) for training
-  - questionable data selection
-  - some limited results
+  - dataset linted and refined
+  - some nice results for coastlines
