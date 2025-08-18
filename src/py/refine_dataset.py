@@ -38,7 +38,7 @@ def generate_cropped_dataset(input_dir, output_dir):
         if crop_count == 0:
             print(f"No valid crops found in {fname}")
 
-    print(f"File count: {crop_count}")
+    print(f"Dataset file count: {crop_count}")
 
 
 # Example usage
