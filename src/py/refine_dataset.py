@@ -38,6 +38,9 @@ def generate_cropped_dataset(input_dir, output_dir):
         if crop_count == 0:
             print(f"No valid crops found in {fname}")
 
+    print(f"File count: {crop_count}")
+
+
 # Example usage
 input_dir = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\archive\_dataset"
 output_dir = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\processed_dataset_less_water"
