@@ -5,7 +5,8 @@ import numpy as np
 IMAGE_SIZE = 128
 WHITE_THRESHOLD = 200
 BLACK_THRESHOLD = 50
-MAX_FRACTION = 0.8
+MAX_FRACTION = 0.1
+MAX_FRACTION_WHITE = 0.9
 STEP = IMAGE_SIZE // 4  # sliding window step
 
 def generate_cropped_dataset(input_dir, output_dir):
@@ -26,7 +27,7 @@ def generate_cropped_dataset(input_dir, output_dir):
                 white_fraction = np.mean(crop > WHITE_THRESHOLD)
                 black_fraction = np.mean(crop < BLACK_THRESHOLD)
 
-                if white_fraction < MAX_FRACTION and black_fraction < MAX_FRACTION:
+                if black_fraction < MAX_FRACTION and white_fraction < MAX_FRACTION_WHITE:
                     crop_img = Image.fromarray(crop)
                     # unique filename for each crop
                     base_name = os.path.splitext(fname)[0]
@@ -39,5 +40,5 @@ def generate_cropped_dataset(input_dir, output_dir):
 
 # Example usage
 input_dir = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\archive\_dataset"
-output_dir = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\processed_dataset"
+output_dir = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\processed_dataset_less_water"
 generate_cropped_dataset(input_dir, output_dir)
