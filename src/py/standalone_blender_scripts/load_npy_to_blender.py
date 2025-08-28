@@ -98,7 +98,7 @@ def generate_faces_from_grid(n_row, n_col):
 
 
 if __name__ == "__main__":
-    npy_path = r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\combined_terrain.npy"
+    npy_path = r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_dcgan_example.npy"
 
     if not os.path.isfile(npy_path):  # if I am on lab PC...
         npy_path = r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy"

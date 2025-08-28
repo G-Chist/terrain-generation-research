@@ -10,7 +10,7 @@ from utils import write_vertices_to_csv, load_bw_image_as_normalized_array, grid
 
 if __name__ == "__main__":
     terrain = load_bw_image_as_normalized_array(
-        r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\GAN_generated_terrain.png")
+        r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_dcgan_example.png")
 
     terrain = apply_convolution(matrix=terrain, kernel=box_blur_7x7)  # smoothen
 
@@ -40,11 +40,11 @@ if __name__ == "__main__":
     min_dim = min(terrain.shape)
     terrain = terrain[:min_dim, :min_dim]
 
-    np.save(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy", terrain)
+    np.save(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_dcgan_example.npy", terrain)
 
     # CHECKS
     terrain_loaded = np.load(
-        r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\gan_generated_terrain.npy")
+        r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\terrain_dcgan_example.npy")
     print("Shape:", terrain_loaded.shape)
     print("Min:", terrain_loaded.min(), "Max:", terrain_loaded.max())
 
