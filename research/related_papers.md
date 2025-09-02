@@ -186,4 +186,33 @@
   - Joint training of DCGAN and pix2pix could improve coherence.
   - Adding biome segmentation ("splatmaps") could enable richer procedural detailing in game engines.
   - Framework adaptable to other procedural generation domains (e.g., 3D meshes).
+---
+### MESA: Text-Driven Terrain Generation Using Latent Diffusion and Global Copernicus Data  
+<https://arxiv.org/abs/2504.07210>  
+#### Can be useful for large-scale, text-guided realistic terrain generation
+- Proposes **MESA**, a diffusion-based model trained on global remote sensing data to generate 2.5D terrains (RGB + DEM) from text prompts.
+  - ![MESA overview](images/p9i1.png)
+- Dataset:
+  - Built on **Major TOM Core-DEM**, a global dataset derived from Copernicus DEM (30m) + Sentinel-2 imagery.
+  - Includes ~1.3M 10×10 km² patches covering most of Earth’s landmass (except Antarctica).
+  - Captions generated from geo-coordinates with four descriptors: biome, geological features, country, and month/season.
+  - ![Dataset coverage](images/p9i2.png)
+- Model:
+  - Adaptation of **Stable Diffusion 2.1** with extra modality-specific heads to jointly denoise RGB and DEM latents.
+  - Inputs: paired Sentinel-2 RGB imagery + DEM + captions.
+  - Outputs: aligned optical + elevation maps conditioned on text.
+  - Uses masked training to remove cloud/no-data artifacts.
+  - ![MESA architecture](images/p9i3.png)
+- Experiments:
+  - **Seed variation**: Different seeds yield diverse but consistent terrain samples per caption.
+  - **Prompt influence**: Biome + geological descriptors are most critical for realism; country less so; season controls flora/weather but inconsistently.
+  - **Shadow correction**: Improves DEM-RGB quality by reducing Sentinel-2 artifacts.
+  - ![Generated terrains](images/p9i4.png)
+- Applications:
+  - Scalable, realistic terrain modeling for games, VFX, and simulations.
+  - Flexible natural language control over terrain type, shape, and season.
+- Limitations & Future Work:
+  - Lacks benchmarks for text-based terrain modeling.
+  - Some inconsistencies remain in seasonal/vegetation depiction.
+  - Could be extended with more conditioning signals (e.g., maps, scribbles, biomes).
 
