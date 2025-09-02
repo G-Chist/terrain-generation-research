@@ -215,4 +215,33 @@
   - Lacks benchmarks for text-based terrain modeling.
   - Some inconsistencies remain in seasonal/vegetation depiction.
   - Could be extended with more conditioning signals (e.g., maps, scribbles, biomes).
+---
+### Procedural Terrain Generation with Style Transfer  
+<https://arxiv.org/abs/2403.08782>  
+#### Can be useful for morphologically realistic procedural terrain generation
+- The paper introduces a hybrid approach combining **procedural noise generation** and **Neural Style Transfer (NST)** to produce terrains with real-world morphological characteristics.
+- Step 1: Generate a base procedural noise map.
+  - Options:  
+    - **Explicit noise**: random matrices at multiple scales smoothed with Gaussian kernels.  
+    - **Perlin noise**: gradient-based noise producing more organic structures.  
+  - These serve as "content" images for NST.  
+- Step 2: Apply **Neural Style Transfer** with **VGG-19**:
+  - Real-world heightmaps provide "style" (morphological traits such as rivers, mountains, deserts).  
+  - Content loss from deeper layers preserves structure of noise; style loss from Gram matrices transfers terrain features.  
+  - A **total variation (TV) loss** is added to improve local coherence.  
+- Results:
+  - Successfully transferred **river**, **mountain**, and **desert** morphologies onto noise maps.  
+  - Example: river networks integrated seamlessly into explicit noise; mountain ridges from Himalaya data applied to Perlin noise.  
+  - Numerical evaluation (SSIM) shows morphologically transferred images are closer to original real terrains than pure procedural outputs.  
+- Customization:
+  - Users can inject **drawn semantic features** (e.g., cross-shaped regions) into the procedural map before style transfer, allowing controlled generation.  
+- Performance:
+  - Each generation requires ~2000 iterations of style transfer (~2 min 46s on RTX 3060).  
+  - Lower upfront cost than GAN-based terrain models (no long training), but higher per-image cost.  
+- Applications:
+  - Game development, film, VR, GIS, architectural visualization, urban planning.  
+  - Can model terrain under environmental changes (e.g., erosion, desertification) by drawing on different style sources.  
+- Limitations & Future Work:
+  - Higher per-image cost makes it less suited for large-scale batch generation.  
+  - Future work may explore **style-conditioned diffusion models** for more efficient one-step synthesis.  
 
