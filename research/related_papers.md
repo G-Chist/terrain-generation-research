@@ -233,6 +233,7 @@
   - Successfully transferred **river**, **mountain**, and **desert** morphologies onto noise maps.  
   - Example: river networks integrated seamlessly into explicit noise; mountain ridges from Himalaya data applied to Perlin noise.  
   - Numerical evaluation (SSIM) shows morphologically transferred images are closer to original real terrains than pure procedural outputs.  
+  - ![Generated terrains](images/p10i1.png)
 - Customization:
   - Users can inject **drawn semantic features** (e.g., cross-shaped regions) into the procedural map before style transfer, allowing controlled generation.  
 - Performance:
@@ -243,5 +244,4 @@
   - Can model terrain under environmental changes (e.g., erosion, desertification) by drawing on different style sources.  
 - Limitations & Future Work:
   - Higher per-image cost makes it less suited for large-scale batch generation.  
-  - Future work may explore **style-conditioned diffusion models** for more efficient one-step synthesis.  
-
+  - Future work may explore **style-conditioned diffusion models** for more efficient one-step synthesis.
