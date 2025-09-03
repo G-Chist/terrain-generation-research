@@ -245,3 +245,45 @@
 - Limitations & Future Work:
   - Higher per-image cost makes it less suited for large-scale batch generation.  
   - Future work may explore **style-conditioned diffusion models** for more efficient one-step synthesis.
+---
+### StyleDEM: a Versatile Model for Authoring Terrains  
+<https://arxiv.org/abs/2304.09626>  
+#### Can be useful for interactive style-aware terrain generation
+- The paper introduces **StyleDEM**, a GAN-based framework (built on StyleGAN) for terrain synthesis and editing with explicit **style control**.  
+- Inputs:
+  - Sketches, low-res DEMs, existing DEMs, or copy-pasted terrain patches.  
+  - Encoder inverts these inputs into the StyleGAN latent space (W+).  
+- Outputs:
+  - High-resolution terrains consistent with real-world geomorphology.  
+  - Editable in terms of structure, detail, and style. 
+  - ![Generated terrains](images/p11i1.png)
+
+- **Core authoring tools**:  
+  - **Sketching**: Rough input sketches are turned into plausible terrains with realistic geomorphological details.  
+  - **Copy-paste editing**: Insert patches without visible seams; StyleDEM adapts local style for coherence.  
+  - **Style mixing**: Combine large-scale structure of one terrain with fine details of another by swapping layers in the latent space.  
+  - **Interpolation**: Smooth morphing between terrains by interpolating latent codes (preserves geomorphology).  
+  - **Super-resolution**: Increase resolution (e.g., from 30 m → 5 m DEMs), adding consistent fine details while keeping large-scale structure.  
+
+- **Datasets & Training**:  
+  - Trained on DEM patches from IGN RGE ALTI (France, 5 m) and NASA SRTM (Europe, 30 m).  
+  - Preprocessed to balance elevation dynamics (avoids flat terrain dominance).  
+  - Training: ~1,760 patches at 5 m, ~1,900 patches at 30 m resolution.  
+  - Runs interactively: generator ~13 ms per terrain on RTX3090.  
+
+- **Applications**:  
+  - Blender plugin for interactive terrain authoring with real-time feedback.  
+  - Supports workflows in game dev, film, GIS, or VR by allowing fast prototyping and controlled editing.  
+  - User study showed even non-artists could sketch and author realistic terrains in ~5 minutes.  
+
+- **Comparisons**:  
+  - Outperforms sparse modeling and patch-based methods, which suffer from seams and repetition.  
+  - More versatile than GAN-based amplification methods that only support style transfer without editing tools.  
+  - Preserves hydrological consistency better than exemplar-based terrain assembly.  
+
+- **Limitations**:  
+  - Separate models must be trained for each resolution (5 m, 30 m).  
+  - Fails to capture very small sketch details (<5% of image size).  
+  - Style blending across classes is limited (can only blend outputs in altitude domain, not latent space).  
+  - Dataset balance affects quality — underrepresented terrain classes produce weaker results.
+---  
