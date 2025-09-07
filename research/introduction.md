@@ -23,4 +23,22 @@ To evaluate the fitness of the methods used to generate terrains, we have compil
 | Data dependency          | Reliance on external datasets                                           |
 | Parallelizability        | Suitability for GPU or multi-core processing to improve performance     |
 
+We have explored previous research in terrain generation to select most suitable methods for the holistic terrain generation system.
+
+| Publication | Authors | Date | Algorithm type | Implementation complexity | Algorithmic complexity | Uniqueness | Scale | Realism | Adjustability | Data dependency | Parallelizability |
+|-------------|---------|------|----------------|---------------------------|------------------------|------------|-------|---------|---------------|-----------------|-------------------|
+| A step towards procedural terrain generation with GANs | C. Beckham, C. Pal | 2017 | | | | | | | | | |
+| An image synthesizer | K. Perlin | 1985 | | | | | | | | | |
+| Authoring Terrains with Spatialised Style | S. Perche, A. Peytavie, B. Benes, E. Galin, E. Guérin | 2023 | | | | | | | | | |
+| EarthGen: Generating the World from Top-Down Views | A. Sharma et al. | 2024 | | | | | | | | | |
+| Fast Hydraulic Erosion Simulation and Visualization on GPU | X. Mei, P. Decaudin, B.-G. Hu | 2007 | | | | | | | | | |
+| Fractal terrain generation for vehicle simulation | J. J. Dawkins, D. M. Bevly, R. L. Jackson | 2012 | | | | | | | | | |
+| Generative Terrain Authoring with Mid-air Hand Sketching in Virtual Reality | Y. Hu, K. Wang, Y. Shao, J. Plass, Z. Wang, K. Perlin | 2024 | | | | | | | | | |
+| MESA: Text-Driven Terrain Generation Using Latent Diffusion and Global Copernicus Data | P. Borne--Pons, M. Czerkawski, R. Martin, R. Rouffet | 2025 | | | | | | | | | |
+| Multifractal Terrain Generation for Evaluating Autonomous Off-Road Ground Vehicles | C. D. Majhor, J. P. Bos | 2025 | | | | | | | | | |
+| Procedural Terrain Generation Using Generative Adversarial Networks | G. Voulgaris, I. Mademlis, I. Pitas | 2021 | | | | | | | | | |
+| Procedural terrain generation with style transfer | F. Merizzi | 2024 | | | | | | | | | |
+| StyleDEM: a Versatile Model for Authoring Terrains | S. Perche, A. Peytavie, B. Benes, E. Galin, E. Guérin | 2023 | | | | | | | | | |
+| Terrain generation using genetic algorithms | T. J. Ong, R. Saunders, J. Keyser, J. J. Leggett | 2005 | | | | | | | | | |
+| Visually Improved Erosion Algorithm for the Procedural Generation of Tile-based Terrain | F. Lim, Y. Tan, A. Bhojan | 2022 | | | | | | | | | |
 
