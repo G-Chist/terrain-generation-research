@@ -20,7 +20,7 @@ To evaluate the fitness of the methods used to generate terrains, we have compil
 | Scale                    | Spatial resolution of terrain (number of meters per point)              |
 | Realism                  | How closely generated terrain mimics natural geological formations      |
 | Adjustability            | Extent of user control over parameters such as roughness, slope, height |
-| Data dependency          | Reliance on external datasets versus fully procedural generation        |
+| Data dependency          | Reliance on external datasets                                           |
 | Parallelizability        | Suitability for GPU or multi-core processing to improve performance     |
 
 
