@@ -25,7 +25,7 @@ To evaluate the fitness of the methods used to generate terrains, we have compil
 
 We have explored previous research in terrain generation to select most suitable methods for the holistic terrain generation system.
 
-| Publication | Authors | Date | Algorithm type | Implementation complexity | Algorithmic complexity | Uniqueness | Scale | Realism | Adjustability | Data dependency | Parallelizability |
+| Publication | Authors | Year | Algorithm type | Implementation complexity | Algorithmic complexity | Uniqueness | Scale | Realism | Adjustability | Data dependency | Parallelizability |
 |-------------|---------|------|----------------|---------------------------|------------------------|------------|-------|---------|---------------|-----------------|-------------------|
 | A step towards procedural terrain generation with GANs | C. Beckham, C. Pal | 2017 | | | | | | | | | |
 | An image synthesizer | K. Perlin | 1985 | | | | | | | | | |
