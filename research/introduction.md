@@ -13,14 +13,14 @@ These methods are efficient and adjustable, making them suitable for controlling
 However, their ability to capture the full realism of natural geological processes is limited.  
 
 2. **Geological simulation.** Algorithms inspired by natural processes, such as hydraulic erosion {Fast Hydraulic Erosion Simulation and Visualization on GPU, Terrain simulation using a model of stream erosion}, aim to replicate the physical forces shaping terrain.
-They produce realistic landscapes and capture large-scale geomorphology.
+They produce somewhat realistic-looking landscapes.
 The trade-off is lack of uniqueness and high computational cost, which can limit their scalability in large simulations.  
 
 3. **Data-driven synthesis.** Machine learning methods, including Generative Adversarial Networks (GANs) {A step towards procedural terrain generation with GANs; Procedural Terrain Generation Using Generative Adversarial Networks}, Neural Style Transfer {Authoring Terrains with Spatialised Style; StyleDEM: a Versatile Model for Authoring Terrains; Procedural terrain generation with style transfer}, and diffusion-based models {EarthGen: Generating the World from Top-Down Views; MESA: Text-Driven Terrain Generation Using Latent Diffusion and Global Copernicus Data}, leverage real-world data to generate terrains with strong realism.
 These approaches are powerful but often rely on large datasets and involve high implementation complexity.
 Recent works extend this trend to user-guided interfaces, such as terrain authoring through virtual reality {Generative Terrain Authoring with Mid-air Hand Sketching in Virtual Reality}, and text-to-terrain synthesis using global satellite data {MESA: Text-Driven Terrain Generation Using Latent Diffusion and Global Copernicus Data}.  
 
-Research in computer graphics has historically played a central role in advancing terrain generation.
+Research in computer graphics has played a central role in advancing terrain generation.
 Early work demonstrated the use of procedural noise for textures and surfaces {An image synthesizer}, later expanding into city-scale and planetary-scale procedural modeling {Procedural modeling of cities; Procedural Planetary Multi-resolution Terrain Generation for Games}.
 These contributions emphasized scalability and artistic control, allowing environments to be generated at multiple levels of resolution.
 While these methods often prioritize visual plausibility over physical accuracy, they provide insight into how holistic terrains can be generated with coherent integration of small- and large-scale features.  
