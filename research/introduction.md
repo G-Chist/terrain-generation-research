@@ -48,7 +48,31 @@ More recent studies propose multifractal terrain functions that allow fine contr
 These contributions highlight the effectiveness of noise-based approaches for local surface modeling.  
 However, they fail to provide a holistic simulation environment that incorporates both the fine-grained detail necessary for ground interaction and the larger-scale landforms required for full environment evaluation.  
 
-This work aims to address this gap by developing a comprehensive system capable of generating terrains that integrate both levels of detail in a unified, realistic, and controllable manner.  
+This work seeks to address the identified gap by developing a comprehensive terrain generation framework that unifies both large-scale and small-scale features within a single, realistic, and controllable simulation environment.  
+The system is designed not only to meet the practical demands of off-road vehicle evaluation but also to establish a foundation for extensible research in terrain modeling and simulation.
+
+The objectives of this work are articulated as follows:  
+
+1. **Ensure theoretical traversability of the generated environment.**  
+   Generated terrains must enable feasible navigation paths for off-road vehicles, avoiding designs that are inherently non-traversable.  
+
+2. **Achieve realism at large scales.**  
+   Terrain formations such as ridges, valleys, and hills must reflect plausible geological structures that resemble natural landscapes.  
+
+3. **Preserve roughness and irregularity at small scales.**  
+   Surface anisotropy, micro-variations, and protrusions must be present to ensure realistic wheel-terrain interaction and accurate vehicle response.  
+
+4. **Maintain high spatial resolution.**  
+   The system must produce terrains with a minimum resolution of 0.2 meters per point, supporting fine-grained vehicle-ground interaction modeling.  
+
+5. **Provide an intuitive user interface.**  
+   Researchers and practitioners must be able to configure parameters and generate terrains without requiring extensive technical expertise in algorithmic implementation.  
+
+6. **Incorporate obstacle placement.**  
+   The framework must allow integration of obstacles into the terrain to simulate realistic driving scenarios.  
+
+7. **Enable variety in obstacle configuration.**  
+   The system must support controlled diversity in obstacle types, sizes, and placements to ensure a wide range of testing conditions.
 
 ---
 
