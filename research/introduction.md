@@ -27,20 +27,7 @@ Recent works extend this trend to user-guided interfaces, such as terrain author
 Research in computer graphics has played a central role in advancing terrain generation.  
 Early work demonstrated the use of procedural noise for textures and surfaces [2], later expanding into city-scale and planetary-scale procedural modeling [16], [17].  
 These contributions emphasized scalability and artistic control, allowing environments to be generated at multiple levels of resolution.  
-While these methods often prioritize visual plausibility over physical accuracy, they provide insight into how holistic terrains can be generated with coherent integration of small-scale and large-scale features.  
-
-To evaluate the suitability of these approaches, we define a set of metrics:  
-
-| Metric                   | Meaning                                                                 |
-|--------------------------|-------------------------------------------------------------------------|
-| Implementation complexity| Effort required to code, integrate, and maintain the algorithm          |
-| Algorithmic complexity   | Computational cost in time and memory as terrain size increases         |
-| Uniqueness               | Ability to produce non-repetitive, distinctive terrain outputs          |
-| Scale                    | Spatial resolution of terrain (number of meters per point)              |
-| Realism                  | How closely generated terrain mimics natural geological formations      |
-| Adjustability            | Extent of user control over parameters such as roughness, slope, height |
-| Data dependency          | Reliance on external datasets                                           |
-| Parallelizability        | Suitability for GPU or multi-core processing to improve performance     |
+While these methods often prioritize visual plausibility on a large scale (5-30 meters per point), they provide insight into how holistic terrains can be generated with coherent integration of small-scale and large-scale features.  
 
 Most research in robotics and off-road vehicle testing has concentrated on the generation of small-scale terrain features.  
 For example, Perlin Noise has been successfully applied to simulate surface irregularities sufficient to generate traversability datasets [18].  
