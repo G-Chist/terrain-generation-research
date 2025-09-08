@@ -53,26 +53,38 @@ The system is designed not only to meet the practical demands of off-road vehicl
 
 The objectives of this work are articulated as follows:  
 
-1. **Ensure theoretical traversability of the generated environment.**  
+1. **Ensure theoretical traversability of the generated environment.**
    Generated terrains must enable feasible navigation paths for off-road vehicles, avoiding designs that are inherently non-traversable.  
 
-2. **Achieve realism at large scales.**  
+2. **Achieve realism at large scales.**
    Terrain formations such as ridges, valleys, and hills must reflect plausible geological structures that resemble natural landscapes.  
 
-3. **Preserve roughness and irregularity at small scales.**  
+3. **Preserve roughness and irregularity at small scales.**
    Surface anisotropy, micro-variations, and protrusions must be present to ensure realistic wheel-terrain interaction and accurate vehicle response.  
 
-4. **Maintain high spatial resolution.**  
+4. **Maintain high spatial resolution.**
    The system must produce terrains with a minimum resolution of 0.2 meters per point, supporting fine-grained vehicle-ground interaction modeling.  
 
-5. **Provide an intuitive user interface.**  
+5. **Provide an intuitive user interface.**
    Researchers and practitioners must be able to configure parameters and generate terrains without requiring extensive technical expertise in algorithmic implementation.  
 
-6. **Incorporate obstacle placement.**  
+6. **Incorporate obstacle placement.**
    The framework must allow integration of obstacles into the terrain to simulate realistic driving scenarios.  
 
-7. **Enable variety in obstacle configuration.**  
+7. **Enable variety in obstacle configuration.**
    The system must support controlled diversity in obstacle types, sizes, and placements to ensure a wide range of testing conditions.
+
+8. **Integrate stochastic variability.**  
+   The system should incorporate controlled randomness to prevent repetitive terrain patterns, ensuring the uniqueness of each generated instance.
+
+9. **Provide export and interoperability.**
+    Generated terrains must be exportable in standard formats readable by commonly used 3D graphics software.
+
+10. **Facilitate repeatability and benchmarking.**
+    Terrain generation must support reproducibility through fixed seeds or saved configurations, enabling consistent benchmarking of off-road vehicle systems.
+
+11. **Maintain multi-scale coherence.**
+    Terrain features at different scales must blend seamlessly, ensuring that small-scale roughness is consistent with underlying large-scale formations.
 
 ---
 
