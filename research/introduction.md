@@ -73,29 +73,6 @@ The objectives of this work are articulated as follows:
 11. **Maintain multi-scale coherence.**
     Terrain features at different scales must blend seamlessly, ensuring that small-scale roughness is consistent with underlying large-scale formations.
 
-Given these objectives, we have compared previous research:
-
-| Reference | Authors | Traversability | Large-scale realism | Small-scale roughness (~0.2m per point) | High resolution | User interface | Obstacle placement | Obstacle variety | Stochastic variability | Export/interoperability | Repeatability/benchmarking | Multi-scale coherence |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| A step towards procedural terrain generation with GANs | C. Beckham, C. Pal | N/A | 1 | 0 | 0 | 1 | N/A | N/A | 1 | 1 | 1 | N/A |
-| Authoring Terrains with Spatialised Style | S. Perche, A. Peytavie, B. Benes, E. Galin, E. Guérin | N/A | 1 | 0 | 0 | 1 | N/A | N/A | 1 | 1 | 1 | N/A |
-| EarthGen: Generating the World from Top-Down Views | A. Sharma et al. | N/A | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
-| Evolution of L-systems for Compact Virtual Landscape Generation | D. A. Ashlock, S. P. Gent, K. M. Bryden | N/A | 1 | 0 | N/A | 0 | N/A | N/A | 0 | 1 | 1 | 1 |
-| Fast Hydraulic Erosion Simulation and Visualization on GPU | X. Mei, P. Decaudin, B.-G. Hu | N/A | 0.5 | 0.5 | 0.5 | 0 | 0 | 0 | 0.5 | 1 | 1 | 1 |
-| Fractal terrain generation for vehicle simulation | J. J. Dawkins, D. M. Bevly, R. L. Jackson | 1 | 0 | 1 | 0.5 | 0 | 0 | 0 | 0.5 | 1 | 1 | 0.5 |
-| Generative Terrain Authoring with Mid-air Hand Sketching in VR | Y. Hu, K. Wang, Y. Shao, J. Plass, Z. Wang, K. Perlin | N/A | 1 | 0 | 0.5 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
-| Learning Ground Traversability From Simulations | R. O. Chavez-Garcia, J. Guzzi, L. M. Gambardella, A. Giusti | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0.5 | 0 | 1 | 0.5 |
-| MESA: Text-Driven Terrain Generation Using Latent Diffusion and Global Copernicus Data | P. Borne--Pons, M. Czerkawski, R. Martin, R. Rouffet | N/A | 1 | 0 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 1 |
-| Multifractal Terrain Generation for Evaluating Autonomous Off-Road Ground Vehicles | C. D. Majhor, J. P. Bos | 1 | 0 | 1 | 1 | 0 | 0 | 0 | 0.5 | 1 | 1 | 1 |
-| Procedural modeling of cities | Y. I. H. Parish, P. Müller | N/A | 1 | 0 | 0.5 | 1 | 0 | 0 | 0.5 | 1 | 1 | 0.5 |
-| Procedural Planetary Multi-resolution Terrain Generation for Games | R. B. D. d’Oliveira, A. L. A. Jr | N/A | 1 | 0 | 0.5 | 0 | 0 | 0 | 0.5 | 1 | 1 | 1 |
-| Procedural Terrain Generation Using Generative Adversarial Networks | G. Voulgaris, I. Mademlis, I. Pitas | N/A | 1 | 0 | 0 | 1 | N/A | N/A | 1 | 1 | 1 | N/A |
-| Procedural terrain generation with style transfer | F. Merizzi | N/A | 1 | 0 | 0.5 | 1 | 0 | 0 | 1 | 1 | 1 | 0.5 |
-| StyleDEM: a Versatile Model for Authoring Terrains | S. Perche, A. Peytavie, B. Benes, E. Galin, E. Guérin | N/A | 1 | 0 | 0.5 | 1 | 0 | 0 | 1 | 1 | 1 | 1 |
-| Terrain generation using genetic algorithms | T. J. Ong, R. Saunders, J. Keyser, J. J. Leggett | N/A | 0 | 1 | 0.5 | 0 | 0 | 0 | 1 | 1 | 1 | 0.5 |
-| Terrain simulation using a model of stream erosion | A. D. Kelley, M. C. Malin, G. M. Nielson | N/A | 0.5 | 0.5 | 0.5 | 0 | 0 | 0 | 0.5 | 1 | 1 | 1 |
-| Visually Improved Erosion Algorithm for Tile-based Terrain | F. Lim, Y. Tan, A. Bhojan | N/A | 0.5 | 0.5 | 0.5 | 0 | 0 | 0 | 0.5 | 1 | 1 | 0.75 |
-
 ---
 
 **References**  
