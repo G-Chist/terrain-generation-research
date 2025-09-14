@@ -770,6 +770,64 @@ def save_array_as_grayscale_png(array: np.ndarray, filepath: str) -> None:
     image.save(filepath)
 
 
+def convert_png_to_jpg(png_path: str, jpg_path: str = None, quality: int = 100):
+    """
+    Convert a PNG image to JPG.
+
+    Parameters:
+        png_path (str): Path to input PNG file.
+        jpg_path (str): Path to save output JPG file. If None, replaces .png with .jpg.
+        quality (int): JPEG quality (1-100, default 100).
+    """
+    if jpg_path is None:
+        jpg_path = os.path.splitext(png_path)[0] + ".jpg"
+
+    img = Image.open(png_path)
+
+    # If PNG has alpha channel, composite over white
+    if img.mode in ('RGBA', 'LA'):
+        background = Image.new("RGB", img.size, (255, 255, 255))
+        background.paste(img, mask=img.split()[-1])  # paste with alpha channel as mask
+        img = background
+    else:
+        img = img.convert("RGB")
+
+    img.save(jpg_path, "JPEG", quality=quality)
+    return jpg_path
+
+
+def convert_16bit_png_to_jpg(png_path: str, jpg_path: str = None, quality: int = 100):
+    """
+    Convert a 16bit PNG image to JPG.
+
+    Parameters:
+        png_path (str): Path to input PNG file.
+        jpg_path (str): Path to save output JPG file. If None, replaces .png with .jpg.
+        quality (int): JPEG quality (1-100, default 100).
+    """
+    if jpg_path is None:
+        jpg_path = os.path.splitext(png_path)[0] + ".jpg"
+
+    img = Image.open(png_path)
+
+    # Convert 16-bit PNG to 8-bit per channel
+    if img.mode == 'I;16' or img.mode == 'I;16B' or img.mode == 'I;16L':
+        arr = np.array(img, dtype=np.uint16)
+        arr = (arr / 256).astype(np.uint8)  # scale 16-bit to 8-bit
+        img = Image.fromarray(arr)
+
+    # Handle alpha channel if present
+    if img.mode in ('RGBA', 'LA'):
+        background = Image.new("RGB", img.size, (255, 255, 255))
+        background.paste(img, mask=img.split()[-1])
+        img = background
+    else:
+        img = img.convert("RGB")
+
+    img.save(jpg_path, "JPEG", quality=quality)
+    return jpg_path
+
+
 def save_array_as_grayscale_png_16bit(array: np.ndarray, filepath: str) -> None:
     """
     Save a 2D NumPy array as a 32-bit grayscale PNG image.
