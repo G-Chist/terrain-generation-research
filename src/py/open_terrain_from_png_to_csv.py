@@ -9,7 +9,7 @@ from utils import write_vertices_to_csv, load_bw_image_as_normalized_array, grid
 
 
 if __name__ == "__main__":
-    terrain = load_bw_image_as_normalized_array(r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\GAN_generated_terrain.png")
+    terrain = load_bw_image_as_normalized_array(r"C:\Users\79140\Downloads\output.png")
     if terrain.ndim == 3:
         terrain = terrain[:, :, 0]  # take first channel
 
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     vertices = grid_to_xyz(terrain, start_coordinate=-6, end_coordinate=6).tolist()
     size = terrain.shape[0]
 
-    write_vertices_to_csv(vertices=vertices, filepath=r"C:\Users\mshestopalov\PycharmProjects\procedural-terrain-generation\data\real_vertices_" + str(size) + ".csv")
+    write_vertices_to_csv(vertices=vertices, filepath=r"C:\Users\79140\Downloads\nst_vertices_" + str(size) + ".csv")

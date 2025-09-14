@@ -532,7 +532,10 @@ def write_vertices_to_csv(vertices, filepath):
         vertices: List of tuples/lists like [(x1, y1, z1), (x2, y2, z2), ...]
         filepath: Path to the output CSV file
     """
-    with open(filepath, mode='w', newline='') as csvfile:
+    # Create parent directories if needed
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+    with open(filepath, mode='w+', newline='') as csvfile:
         writer = csv.writer(csvfile)
         for v in vertices:
             if len(v) != 3:
