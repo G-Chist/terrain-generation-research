@@ -8,7 +8,7 @@ if __name__ == "__main__":
 
     grid, x_coords, y_coords = load_elevation_grid(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\USGS_1M_17_x54y411_VA_FEMA-NRCS_SouthCentral_2017_D17.tif")
 
-    grid_cropped = crop_grid_by_percent(grid, 90, 0, 512)
+    grid_cropped = crop_grid_by_percent(grid, 0, 50, 512)
 
     elevation = grid_cropped
 
