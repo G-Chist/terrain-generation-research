@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
     # Plot in 2D
 
-    """
+    #"""
     plt.imshow(grid, cmap='gray', interpolation='lanczos')  # height map
     plt.colorbar()
     plt.show()
-    """
+    #"""
