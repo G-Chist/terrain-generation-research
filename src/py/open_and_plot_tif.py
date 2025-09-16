@@ -7,7 +7,7 @@ from utils import load_elevation_grid, crop_grid_by_percent, save_array_as_grays
 
 if __name__ == "__main__":
 
-    grid, x_coords, y_coords = load_elevation_grid(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\USGS_1M_17_x54y411_VA_FEMA-NRCS_SouthCentral_2017_D17.tif")
+    grid, x_coords, y_coords = load_elevation_grid(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\output_USGS1m.tif")
 
     styles = 1
     for i in range(10, 90, 5):
@@ -26,8 +26,8 @@ if __name__ == "__main__":
 
     # Plot in 2D
 
-    #"""
+    """
     plt.imshow(grid, cmap='gray', interpolation='lanczos')  # height map
     plt.colorbar()
     plt.show()
-    #"""
+    """
