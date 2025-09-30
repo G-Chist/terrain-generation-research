@@ -9,20 +9,17 @@ if __name__ == "__main__":
 
     grid, x_coords, y_coords = load_elevation_grid(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\output_USGS1m.tif")
 
-    styles = 1
-    for i in range(10, 90, 5):
-        for j in range(10, 90, 5):
+    datapoints = 1
+    for i in range(0, 100, 1):
+        for j in range(0, 100, 1):
 
             grid_cropped = crop_grid_by_percent(grid, i/100, j/100, 512)
 
             elevation = grid_cropped
 
-            save_array_as_grayscale_png_16bit(elevation, r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\styles_png\style" + str(styles) + r".png")
-            convert_16bit_png_to_jpg(r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\styles_png\style" + str(styles) + r".png",
-                               r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\styles_jpg\style" + str(styles) + r".jpg",
-                               100)
+            save_array_as_grayscale_png_16bit(elevation, r"C:\Users\79140\PycharmProjects\procedural-terrain-generation\data\datapoints_png\datapoint" + str(datapoints) + r".png")
 
-            styles += 1
+            datapoints += 1
 
     # Plot in 2D
 
