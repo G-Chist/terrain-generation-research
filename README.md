@@ -1,4 +1,4 @@
-This repository contains the code used to generate and analyze noise-based terrains.
+This repository contains the code used to generate and analyze noise-based terrains (SUPER ULTRA MEGA DEPRECATED!!! SEE TerrainVAE FOR BETTER RESULTS)
 
 Overview:
 - Generate 2D terrain heightmaps using Perlin noise and fractal functions.
